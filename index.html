@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Momento — Coming Soon</title>
+  <meta name="description" content="Your memory layer for the people and moments that matter." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Momento" />
+  <meta property="og:description" content="Your memory layer for the people and moments that matter." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;450;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #F9F8F5;
+      --surface: #FFFFFF;
+      --text-primary: #1C1C1A;
+      --text-secondary: #6B6B67;
+      --text-muted: #A8A8A3;
+      --accent: #C96A2E;
+      --accent-light: #F5EDE4;
+      --border: #E8E8E3;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: 2rem 1.5rem;
+    }
+
+    .container {
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0.3rem 0.85rem;
+      border-radius: 99px;
+      margin-bottom: 2rem;
+    }
+
+    .wordmark {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(3.5rem, 12vw, 5.5rem);
+      font-weight: 400;
+      line-height: 1;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+
+    .wordmark em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .tagline {
+      font-size: clamp(1rem, 3vw, 1.15rem);
+      color: var(--text-secondary);
+      font-weight: 400;
+      line-height: 1.65;
+      max-width: 400px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1.5px;
+      background: var(--border);
+      margin: 0 auto 2.5rem;
+    }
+
+    .description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .footer {
+      margin-top: 4rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    .footer span {
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      vertical-align: middle;
+      margin: 0 0.5rem;
+      opacity: 0.5;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141412;
+        --surface: #1E1E1B;
+        --text-primary: #F0EFE9;
+        --text-secondary: #9A9A95;
+        --text-muted: #636360;
+        --accent: #D4763A;
+        --accent-light: #2A1E15;
+        --border: #2C2C28;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="eyebrow">Coming soon</div>
+
+    <h1 class="wordmark">Mo<em>mento</em></h1>
+
+    <p class="tagline">
+      Your memory layer for the people and moments that matter.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="description">
+      People don't forget dates. They forget the context around them —
+      what gift they gave last year, what happened, what they meant to do differently.
+      Momento remembers, so you don't have to.
+    </p>
+  </div>
+
+  <footer class="footer">
+    Local&#8209;first<span></span>No account<span></span>Your data stays yours
+  </footer>
+
+</body>
+</html>
