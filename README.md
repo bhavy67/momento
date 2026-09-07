@@ -122,30 +122,48 @@ No features that sound impressive in a demo but create no actual user value.
 
 | Layer | Choice | Reason |
 |---|---|---|
-| Framework | React 18 + TypeScript | Practical, maintainable, large ecosystem, suits the dev profile |
-| Build tool | Vite | Fast dev server, excellent DX, native ESM, PWA plugin |
-| Styling | Tailwind CSS v4 | Utility-first, easy responsiveness, no style drift |
-| Local DB | Dexie.js (IndexedDB) | Best-in-class IndexedDB abstraction. TypeScript-native, reactive queries, versioned migrations |
-| State (UI) | Zustand | Lightweight, no boilerplate, excellent TypeScript. Used for UI state only (modals, drawers, navigation). DB-backed data flows through Dexie hooks directly |
-| Routing | React Router v6 | Well-understood, file-structure-friendly, good TypeScript |
+| Framework | Angular (latest) + TypeScript | Structured, opinionated, built-in DI + routing. Signals-based reactivity means no external state library needed |
+| Build tool | Angular CLI (Vite-backed since v17) | Official toolchain, fast HMR, production-optimised builds |
+| Styling | Tailwind CSS v4 | Utility-first, excellent responsive support, zero runtime |
+| Local DB | Dexie.js (IndexedDB) | Best-in-class IndexedDB abstraction. TypeScript-native, reactive `liveQuery`, versioned migrations |
+| State | Angular Signals | Built-in. `signal()` / `computed()` / `effect()` replace any external store. No Zustand, no NgRx needed |
+| Routing | Angular Router | Built-in, lazy-loaded feature routes, functional guards |
 | Date utils | date-fns | Tree-shakeable, immutable, excellent TypeScript. Not moment.js (bloated). Not dayjs (fewer features) |
-| PWA | vite-plugin-pwa | Workbox-backed, zero-config baseline, excellent Vite integration |
-| Testing | Vitest + Testing Library | Native Vite ecosystem, fast, same config as app |
-| Icons | Lucide React | Clean, consistent, tree-shakeable |
+| PWA | @angular/pwa | Official Angular PWA package. Workbox-backed service worker, `ngsw-config.json` |
+| Testing | Vitest (utils) + Angular Testing Library (components) | Vitest for pure TS functions; Angular Testing Library for component behaviour |
+| Icons | lucide-angular | Same Lucide icon set, Angular-native package |
 
 ### On state management
 
-Momento has two distinct kinds of state:
+Angular Signals eliminate the need for an external state library entirely. Momento uses two kinds of state:
 
-1. **Persisted data** — People, events, gifts, memories. Lives in IndexedDB via Dexie. Components subscribe to this via Dexie's `useLiveQuery` hook. No Zustand involved.
-2. **UI state** — Modals open/closed, active sheets, quick-add state, navigation. Lives in Zustand. Ephemeral, never persisted.
+1. **Persisted data** — People, events, gifts, memories. Lives in IndexedDB via Dexie. Domain services expose this as signals by wrapping `liveQuery` with `toSignal`:
 
-This separation keeps the data layer clean and avoids the anti-pattern of syncing between a state store and IndexedDB.
+```typescript
+// people.service.ts
+readonly people = toSignal(
+  from(liveQuery(() => db.people.orderBy('name').toArray())),
+  { initialValue: [] }
+);
+```
+
+Components inject the service and read the signal. No manual subscriptions, no `async` pipe gymnastics, no sync-to-store step.
+
+2. **UI state** — Modals open/closed, active sheets, quick-add state. Lives in a lightweight `UiStateService` as plain signals. Ephemeral, never persisted.
+
+```typescript
+// ui-state.service.ts
+readonly quickAddOpen = signal(false);
+readonly activeSheet = signal<string | null>(null);
+```
+
+This replaces what Zustand handled in the original React plan. The separation is identical — only the mechanism is Angular-native.
 
 ### What was deliberately excluded
 
 - No backend, no API, no server
 - No authentication or accounts
+- No NgRx (Angular Signals are sufficient; NgRx adds ceremony without benefit at this scale)
 - No cloud sync (V2+ consideration)
 - No push notifications in V1 (unreliable on mobile web, especially iOS, requires backend infrastructure)
 - No photos/media attachments (IndexedDB blob handling adds significant complexity; V1.5)
@@ -158,42 +176,45 @@ This separation keeps the data layer clean and avoids the anti-pattern of syncin
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                     React UI                        │
-│   Pages / Feature Components / Shared Components   │
-└────────────────────┬────────────────────────────────┘
-                     │
+┌──────────────────────────────────────────────────────┐
+│             Angular Component Tree                   │
+│  Feature Components / Shared Components / Pipes     │
+└────────────────────┬─────────────────────────────────┘
+                     │  inject()
           ┌──────────┴──────────┐
           │                     │
-    ┌─────▼──────┐       ┌──────▼──────┐
-    │   Zustand   │       │    Dexie    │
-    │  (UI state) │       │  (DB hooks) │
-    └─────────────┘       └──────┬──────┘
-                                 │
-                          ┌──────▼──────┐
-                          │  IndexedDB  │
-                          │  (Browser)  │
-                          └─────────────┘
-                                 │
-                     ┌───────────┴──────────┐
-                     │   Domain utils layer │
-                     │  (pure functions)    │
-                     │  dates / recurrence  │
-                     │  calculations        │
-                     └──────────────────────┘
+    ┌─────▼───────┐     ┌───────▼──────────────────┐
+    │ UiState     │     │  Domain Services          │
+    │ Service     │     │  PeopleService            │
+    │ (signals)   │     │  EventsService            │
+    └─────────────┘     │  GiftsService             │
+                        │  MemoriesService          │
+                        └───────┬──────────────────┘
+                                │  toSignal(from(liveQuery(...)))
+                         ┌──────▼──────┐
+                         │  IndexedDB  │
+                         │ (Dexie.js)  │
+                         └─────────────┘
+                                │
+                    ┌───────────┴──────────┐
+                    │    Utils layer        │
+                    │  (pure functions,     │
+                    │   no Angular deps)    │
+                    │  dates / recurrence   │
+                    └──────────────────────┘
 ```
 
 ### Layers
 
-**UI layer** — React components organized by feature. Pages are thin; feature components own their data subscriptions via Dexie hooks. No business logic in components.
+**Component layer** — Standalone Angular components organized by feature. Components are thin: they inject services, read signals, and render. No business logic, no direct Dexie calls.
 
-**Domain utils** — Pure TypeScript functions for date calculations, recurrence expansion, age derivation, milestone detection, countdown computation. Fully testable with no dependencies on React or Dexie.
+**Service layer** — Injectable services are the state and data layer. Domain services (People, Events, Gifts, Memories) own their Dexie queries and expose the results as signals via `toSignal`. `UiStateService` holds ephemeral UI state as plain signals.
 
-**DB layer** — Dexie instance with typed schema, versioned migrations. Each feature has a repository-style set of helper functions for its queries and mutations. Direct Dexie calls are never scattered across components.
+**Domain utils** — Pure TypeScript functions: date calculations, recurrence expansion, age derivation, milestone detection, countdown computation. No Angular decorators, no Dexie references. Fully unit-testable in isolation.
 
-**UI state layer** — Zustand stores for transient UI state. Separate stores per concern: modal state, navigation state, quick-add state.
+**DB layer** — A single `DatabaseService` holds the Dexie instance with typed schema and versioned migrations. Domain services call it directly; no extra repository abstraction layer is needed given Angular DI already provides that boundary.
 
-**Export/import** — A dedicated module that serializes all Dexie tables to JSON and deserializes + validates on import. Completely standalone from the rest of the app.
+**Export/import** — A dedicated util module serializes all Dexie tables to JSON and deserializes + validates on import. Completely standalone from Angular and from the rest of the app.
 
 ---
 
@@ -291,54 +312,66 @@ These are pure functions in `src/utils/dates.ts`. They are computed at render ti
 ```
 momento/
 ├── public/
-│   ├── icons/                 # PWA app icons (multiple sizes)
-│   └── manifest.webmanifest
+│   └── icons/                       # PWA app icons (multiple sizes)
 ├── src/
-│   ├── components/
-│   │   ├── ui/                # Atomic: Button, Input, Modal, Sheet, Badge, etc.
-│   │   └── shared/            # Composed: PersonCard, EventCard, CountdownBadge, etc.
-│   ├── features/
-│   │   ├── home/              # Home screen — upcoming, on this day, needs attention
-│   │   ├── people/            # People list, person profile, person form
-│   │   ├── events/            # Event creation, event detail, recurrence editor
-│   │   ├── gifts/             # Gift list, gift form per person/year
-│   │   ├── memories/          # Memory capture, memory display
-│   │   ├── timeline/          # Chronological history view
-│   │   └── settings/          # Import, export, clear, preferences
-│   ├── db/
-│   │   ├── db.ts              # Dexie instance + table registration
-│   │   ├── schema.ts          # Table schema types (enforced by Dexie)
-│   │   ├── migrations.ts      # Versioned schema migrations
-│   │   └── repositories/      # Query/mutation helpers per entity
-│   │       ├── people.repo.ts
-│   │       ├── events.repo.ts
-│   │       ├── gifts.repo.ts
-│   │       └── memories.repo.ts
-│   ├── store/
-│   │   ├── ui.store.ts        # Modal/drawer state, active sheet
-│   │   └── quick-add.store.ts # Quick add overlay state
-│   ├── hooks/                 # Shared React hooks (wrap Dexie queries)
-│   │   ├── useUpcoming.ts
-│   │   ├── useOnThisDay.ts
-│   │   ├── usePerson.ts
-│   │   └── useSearch.ts
-│   ├── utils/
-│   │   ├── dates.ts           # All date math — age, countdown, next occurrence, milestones
-│   │   ├── recurrence.ts      # Expand recurring events to next N occurrences
-│   │   ├── export.ts          # Serialize all tables to JSON
-│   │   ├── import.ts          # Parse, validate, and import JSON backup
-│   │   └── id.ts              # nanoid wrapper
-│   ├── types/
-│   │   └── index.ts           # All shared TypeScript types
-│   ├── router/
-│   │   └── index.tsx          # React Router route definitions
-│   ├── App.tsx
-│   └── main.tsx
-├── index.html
+│   ├── app/
+│   │   ├── core/                    # App-wide singletons — provided once, used everywhere
+│   │   │   ├── db/
+│   │   │   │   ├── database.service.ts   # Dexie instance + table registration
+│   │   │   │   ├── schema.ts             # Dexie table type definitions
+│   │   │   │   └── migrations.ts         # Versioned schema migrations
+│   │   │   └── services/
+│   │   │       ├── people.service.ts     # People state + mutations (signal-backed)
+│   │   │       ├── events.service.ts     # Events state + mutations
+│   │   │       ├── gifts.service.ts      # Gift tracking state + mutations
+│   │   │       ├── memories.service.ts   # Memories state + mutations
+│   │   │       ├── search.service.ts     # Cross-entity search
+│   │   │       ├── settings.service.ts   # localStorage-backed settings signal
+│   │   │       └── ui-state.service.ts   # Ephemeral UI state (modals, sheets, quick-add)
+│   │   ├── features/                # Feature-based standalone components
+│   │   │   ├── home/
+│   │   │   │   ├── home.component.ts
+│   │   │   │   └── home.component.html
+│   │   │   ├── people/
+│   │   │   │   ├── people-list/
+│   │   │   │   ├── person-detail/
+│   │   │   │   └── person-form/
+│   │   │   ├── events/
+│   │   │   │   ├── event-detail/
+│   │   │   │   └── event-form/
+│   │   │   ├── gifts/
+│   │   │   ├── memories/
+│   │   │   ├── timeline/
+│   │   │   └── settings/
+│   │   ├── shared/                  # Shared UI — no data dependencies
+│   │   │   ├── components/          # Button, Modal, Sheet, Badge, Input, etc.
+│   │   │   ├── pipes/               # countdown.pipe.ts, age-from-date.pipe.ts, local-date.pipe.ts
+│   │   │   └── directives/          # click-outside.directive.ts
+│   │   ├── utils/                   # Pure TS — zero Angular/Dexie imports
+│   │   │   ├── dates.ts             # Age, countdown, next occurrence, milestone detection
+│   │   │   ├── recurrence.ts        # Expand recurring events to next N occurrences
+│   │   │   ├── export.ts            # Serialize all DB tables to JSON
+│   │   │   ├── import.ts            # Parse, validate, upsert JSON backup
+│   │   │   └── id.ts                # nanoid wrapper
+│   │   ├── types/
+│   │   │   └── index.ts             # All shared TypeScript interfaces and types
+│   │   ├── app.component.ts         # Root shell (nav + router outlet)
+│   │   ├── app.component.html
+│   │   ├── app.config.ts            # provideRouter, provideAnimations, etc.
+│   │   └── app.routes.ts            # Lazy-loaded feature routes
+│   ├── environments/
+│   │   ├── environment.ts
+│   │   └── environment.prod.ts
+│   ├── styles.css                   # @import "tailwindcss"; global tokens
+│   ├── index.html
+│   └── main.ts
+├── angular.json
+├── ngsw-config.json                 # Angular service worker config
 ├── package.json
 ├── tailwind.config.ts
 ├── tsconfig.json
-├── vite.config.ts
+├── tsconfig.app.json
+├── tsconfig.spec.json
 └── README.md
 ```
 
@@ -429,6 +462,9 @@ The visual language is **warm, minimal, personal**. Not a productivity app. Not 
 ## Development Setup
 
 ```bash
+# Install Angular CLI globally (if not already installed)
+npm install -g @angular/cli
+
 # Clone the repository
 git clone <repo>
 cd momento
@@ -436,35 +472,31 @@ cd momento
 # Install dependencies
 npm install
 
-# Start dev server
-npm run dev
+# Start dev server (http://localhost:4200)
+ng serve
 
 # Build for production
-npm run build
+ng build
 
-# Preview production build
-npm run preview
+# Run unit tests
+npm test
 
-# Run tests
-npm run test
-
-# Type check
-npm run typecheck
+# Lint
+npm run lint
 ```
 
 ---
 
 ## Scripts
 
-| Script | Purpose |
+| Command | Purpose |
 |---|---|
-| `dev` | Start Vite dev server |
-| `build` | TypeScript compile + Vite production build |
-| `preview` | Preview production build locally |
-| `test` | Run Vitest |
-| `test:ui` | Vitest with UI |
-| `typecheck` | Run `tsc --noEmit` |
-| `lint` | ESLint |
+| `ng serve` / `npm start` | Start Angular dev server on :4200 |
+| `ng build` | Production build (output to `dist/`) |
+| `ng test` / `npm test` | Run unit tests |
+| `ng lint` / `npm run lint` | ESLint |
+| `ng generate component` | Scaffold a new component |
+| `ng generate service` | Scaffold a new service |
 
 ---
 
@@ -542,61 +574,54 @@ This is not a marketing claim. It is the architecture.
 - Prefer `interface` for domain objects, `type` for unions and computed types.
 - All database entities have an `id: string` (nanoid), `createdAt: number`, `updatedAt: number`.
 
-### File naming
-- React components: `PascalCase.tsx`
-- Hooks: `useCamelCase.ts`
-- Utilities: `camelCase.ts`
-- Repositories: `entityName.repo.ts`
-- Stores: `feature.store.ts`
+### File naming (Angular conventions)
+- Components: `kebab-case.component.ts` + `kebab-case.component.html`
+- Services: `kebab-case.service.ts`
+- Pipes: `kebab-case.pipe.ts`
+- Directives: `kebab-case.directive.ts`
+- Utils: `camelCase.ts`
+- Types: grouped in `src/app/types/index.ts`
 
-### Components
-- One component per file.
-- Feature components own their data subscription (Dexie hooks). They do not receive all data as props from a parent.
-- UI components (`src/components/ui/`) are stateless and have no data dependencies.
-- No business logic inside JSX. Extract to a hook or a util function.
+### Angular component rules
+- **All components are standalone.** No NgModules anywhere.
+- Use `inject()` function for dependency injection — not constructor parameter injection.
+- Use the new control flow syntax everywhere: `@if`, `@for`, `@switch`, `@defer`. Not `*ngIf`, `*ngFor`.
+- Use signal inputs: `input()`, `model()`, `output()`, `viewChild()`. Not `@Input()` / `@Output()` decorators.
+- One component per file. Template inline only for trivial cases (< 5 lines); otherwise separate `.html` file.
+- No business logic in templates. Extract to a `computed()` or method in the component class.
+- Shared UI components (`src/app/shared/components/`) accept only primitive or typed inputs. No service injection.
+
+### Signals and state
+- Domain services expose data as `readonly` signals. Components never write to them directly.
+- `computed()` for derived state — never duplicate a derived value as a separate `signal()`.
+- `effect()` is a last resort. If you need it, there is usually a better way.
+- Never mirror Dexie data into a signal manually — use `toSignal(from(liveQuery(...)))` to keep them in sync automatically.
+- `UiStateService` is the only place ephemeral UI state (modal open/close, active sheet) lives.
 
 ### Date handling
-- Dates in the database are stored as `{ year, month, day }` objects (1-indexed months) for annual recurrence events like birthdays, where the year is often irrelevant.
-- Unix timestamps (milliseconds) are used for `createdAt`, `updatedAt`, and memories (which are about a specific moment in time).
-- All date math lives in `src/utils/dates.ts`. No date calculations in components.
-- Use `date-fns` for formatting and manipulation. Never use `new Date()` arithmetic directly.
-
-### State
-- Dexie `useLiveQuery` for all persisted data. Never mirror DB data into Zustand.
-- Zustand only for UI state: what modal is open, what sheet is active, etc.
-- Zustand stores are small and focused. One concern per store.
+- Dates in the database: `{ year?: number, month: number, day: number }` (1-indexed months) for birthday/anniversary types where year may be unknown.
+- Unix timestamps (milliseconds) for `createdAt`, `updatedAt`, and memory dates.
+- All date math lives in `src/app/utils/dates.ts`. Zero date calculations in components or templates.
+- Use `date-fns` for formatting and manipulation. Never use raw `Date` arithmetic.
+- Angular pipes in `src/app/shared/pipes/` wrap utils for template formatting only.
 
 ### Testing
-- Pure utility functions in `src/utils/` must have unit tests. This is where the business logic lives and it must be correct.
-- Repositories should have integration tests that run against an in-memory Dexie instance.
-- Component tests for critical user interactions (creating a person, adding an event, exporting data).
+- Pure utility functions in `src/app/utils/` must have unit tests (Vitest). This is where all business logic lives.
+- Service tests for DB operations run against an in-memory Dexie instance (`fake-indexeddb`).
+- Component tests via Angular Testing Library for critical flows (create person, add event, export data).
 - No snapshot tests.
 
 ### Accessibility
-- Semantic HTML first. Landmark elements, proper heading hierarchy.
+- Semantic HTML first: landmark elements, correct heading hierarchy.
 - All interactive elements are keyboard-accessible.
-- All images have `alt` text. All icons used alone have `aria-label`.
-- Minimum contrast ratios per WCAG AA.
-- Focus management when modals and sheets open/close.
+- Icons used standalone must have `aria-label`.
+- Minimum WCAG AA contrast ratios.
+- `cdkTrapFocus` or equivalent for modal/sheet focus management.
 
 ### No premature abstraction
 - Do not create a utility for something used once.
-- Do not create a component for something that exists in only one place.
+- Do not create a component that exists in only one place.
 - Duplication is cheaper than the wrong abstraction.
-
----
-
-## Questions That Need Answers Before Implementation
-
-These are product decisions that are not yet settled:
-
-1. **Person-less events** — Should events always require a linked person, or can they exist independently (e.g., "Trip to Goa" without linking to specific people)? The current model allows optional `personId`, but this changes the home screen and timeline logic significantly.
-
-2. **Birthday year optionality** — The spec stores birthday year as optional on Person. This is correct UX-wise. But it changes the recurrence calculation. Confirm this is the right tradeoff.
-
-3. **Reminder strategy for V1** — Without push notifications, reminders in V1 are purely visual (the home screen shows upcoming events). Is this acceptable for V1, or should we investigate a local notification approach even with its limitations on mobile web?
-
-4. **Quick Add scope in V1** — Is a structured form for Quick Add sufficient for V1, or is a text-input parser expected from the start?
 
 ---
 
