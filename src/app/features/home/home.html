@@ -1,0 +1,130 @@
+<div class="home">
+
+  <!-- ── Greeting ──────────────────────────────────────────────── -->
+  <header class="greeting-block">
+    <div class="greeting-mark" aria-hidden="true">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 67 20.56 A 34 34 0 1 1 33 20.56"
+              stroke="var(--color-text-primary)" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="50" cy="16" r="6.5" fill="var(--color-accent)"/>
+      </svg>
+    </div>
+    <div class="greeting-text">
+      <p class="greeting-label">{{ greeting }}</p>
+      <h1 class="greeting-date">{{ todayLabel }}</h1>
+    </div>
+  </header>
+
+  <!-- ── Empty state (no people or events yet) ─────────────────── -->
+  @if (isEmpty()) {
+    <div class="empty-state">
+      <div class="empty-mark" aria-hidden="true">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56"
+                stroke="var(--color-border)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--color-border)"/>
+        </svg>
+      </div>
+      <h2 class="empty-title">Your memory layer starts here</h2>
+      <p class="empty-body">
+        Add the people who matter and their important dates.<br>
+        Momento will surface what you need, when you need it.
+      </p>
+      <div class="empty-actions">
+        <a routerLink="/people/new" class="btn-primary">Add your first person</a>
+        <a routerLink="/events/new" class="btn-ghost">Add an event</a>
+      </div>
+    </div>
+  } @else {
+
+    <!-- ── Today ────────────────────────────────────────────────── -->
+    @if (todayEvents().length > 0) {
+      <section class="section" aria-labelledby="today-heading">
+        <h2 id="today-heading" class="section-heading section-heading--today">Today</h2>
+        <ul class="today-list" role="list">
+          @for (u of todayEvents(); track u.event.id) {
+            <li>
+              <a [routerLink]="['/events', u.event.id]" class="today-card">
+                <div class="today-card-icon">{{ typeIcon(u.event.type) }}</div>
+                <div class="today-card-body">
+                  <span class="today-card-title">{{ u.event.title }}</span>
+                  @if (subtitleFor(u)) {
+                    <span class="today-card-sub">{{ subtitleFor(u) }}</span>
+                  }
+                </div>
+                @if (u.isMilestone) {
+                  <span class="milestone-star" title="{{ u.milestoneLabel }}">✦</span>
+                }
+                <svg class="today-card-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    <!-- ── Coming up ─────────────────────────────────────────────── -->
+    <section class="section" aria-labelledby="upcoming-heading">
+      <div class="section-header-row">
+        <h2 id="upcoming-heading" class="section-heading">Coming up</h2>
+        <span class="section-meta">next {{ windowDays() }} days</span>
+      </div>
+
+      @if (soonEvents().length === 0) {
+        <div class="empty-section">
+          <p>Nothing in the next {{ windowDays() }} days.</p>
+          <a routerLink="/events/new" class="link-accent">Add an event →</a>
+        </div>
+      } @else {
+        <ul class="event-list" role="list">
+          @for (u of soonEvents(); track u.event.id) {
+            <li class="event-row" [class.milestone]="u.isMilestone">
+              <a [routerLink]="['/events', u.event.id]" class="event-row-link">
+                <span class="event-icon" aria-hidden="true">{{ typeIcon(u.event.type) }}</span>
+                <div class="event-info">
+                  <span class="event-title">{{ u.event.title }}</span>
+                  @if (subtitleFor(u)) {
+                    <span class="event-sub">{{ subtitleFor(u) }}</span>
+                  }
+                </div>
+                <div class="event-right">
+                  <span class="countdown-pill" [class.soon]="u.daysUntil <= 7">
+                    {{ formatCountdown(u.daysUntil) }}
+                  </span>
+                  @if (u.isMilestone) {
+                    <span class="milestone-dot" aria-label="Milestone">✦</span>
+                  }
+                </div>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <!-- ── On This Day ───────────────────────────────────────────── -->
+    @if (onThisDay().length > 0) {
+      <section class="section" aria-labelledby="otd-heading">
+        <h2 id="otd-heading" class="section-heading">On this day</h2>
+        <ul class="otd-list" role="list">
+          @for (entry of onThisDay(); track entry.event.id) {
+            <li>
+              <a [routerLink]="['/events', entry.event.id]" class="otd-row">
+                <div class="otd-info">
+                  <span class="otd-title">{{ entry.event.title }}</span>
+                  @if (entry.person) {
+                    <span class="otd-person">{{ entry.person.name }}</span>
+                  }
+                </div>
+                <span class="otd-years">{{ yearsAgoLabel(entry.yearsAgo) }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+  }
+</div>
