@@ -1,4 +1,4 @@
-/* ─── App shell layout ───────────────────────────────────────────────────── */
+/* ─── App shell layout ─────────────────────────────────────────────────────── */
 
 .app-shell {
   display: flex;
@@ -6,37 +6,59 @@
   background-color: var(--color-bg);
 }
 
-/* ─── Desktop sidebar ────────────────────────────────────────────────────── */
+/* ─── Desktop sidebar ──────────────────────────────────────────────────────── */
 
 .sidebar {
-  display: none; /* hidden on mobile */
-  width: 220px;
+  display: none;
+  width: 228px;
   flex-shrink: 0;
   flex-direction: column;
-  padding: 1.5rem 1rem;
+  padding: 1.25rem 0.875rem 1.5rem;
   border-right: 1px solid var(--color-border);
   background-color: var(--color-surface);
   position: sticky;
   top: 0;
   height: 100dvh;
   overflow-y: auto;
+  gap: 0.25rem;
 }
 
 @media (min-width: 768px) {
   .sidebar { display: flex; }
 }
 
+/* ── Logo lockup ─────────────────────────────────────────────────────────── */
+
 .sidebar-brand {
-  padding: 0.25rem 0.5rem;
-  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0.5rem 0.625rem;
+  margin-bottom: 1.25rem;
+  border-radius: var(--radius-md);
+  transition: background 0.15s;
 }
 
-.sidebar-wordmark {
-  font-size: 1.25rem;
-  font-weight: 600;
+.sidebar-brand:hover { background: var(--color-surface-2); }
+
+.brand-mark {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.brand-wordmark {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.2rem;
   color: var(--color-text-primary);
   letter-spacing: -0.02em;
+  line-height: 1;
+  /* Optical align with the mark */
+  padding-top: 1px;
 }
+
+/* ── Nav links ───────────────────────────────────────────────────────────── */
 
 .sidebar-nav {
   list-style: none;
@@ -44,7 +66,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 2px;
   flex: 1;
 }
 
@@ -52,12 +74,13 @@
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0.625rem 0.75rem;
+  padding: 0.6rem 0.75rem;
   border-radius: var(--radius-md);
   color: var(--color-text-muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 500;
   transition: background-color 0.15s, color 0.15s;
+  letter-spacing: -0.01em;
 }
 
 .nav-link:hover {
@@ -68,43 +91,51 @@
 .nav-link.active {
   background-color: var(--color-accent-bg);
   color: var(--color-accent);
+  font-weight: 600;
 }
 
 .nav-icon {
-  font-size: 0.85rem;
-  width: 1rem;
-  text-align: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 
+.nav-link.active .nav-icon { opacity: 1; }
+
+/* ── Sidebar Add button ──────────────────────────────────────────────────── */
+
 .sidebar-add-btn {
-  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 0.75rem;
   padding: 0.625rem 1rem;
   background-color: var(--color-accent);
   color: white;
   border-radius: var(--radius-md);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
   transition: opacity 0.15s;
 }
 
-.sidebar-add-btn:hover {
-  opacity: 0.88;
-}
+.sidebar-add-btn:hover { opacity: 0.88; }
 
-/* ─── Main content ───────────────────────────────────────────────────────── */
+/* ─── Main content ─────────────────────────────────────────────────────────── */
 
 .content {
   flex: 1;
   min-width: 0;
-  /* Add padding-bottom on mobile to avoid content going under the bottom nav */
-  padding-bottom: 72px;
+  padding-bottom: 72px; /* clear mobile bottom nav */
 }
 
 @media (min-width: 768px) {
   .content { padding-bottom: 0; }
 }
 
-/* ─── Mobile bottom nav ──────────────────────────────────────────────────── */
+/* ─── Mobile bottom nav ────────────────────────────────────────────────────── */
 
 .bottom-nav {
   display: flex;
@@ -117,11 +148,12 @@
   border-top: 1px solid var(--color-border);
   z-index: 50;
   padding-bottom: env(safe-area-inset-bottom);
+  /* Subtle glass on supported browsers */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-@media (min-width: 768px) {
-  .bottom-nav { display: none; }
-}
+@media (min-width: 768px) { .bottom-nav { display: none; } }
 
 .bottom-nav-item {
   flex: 1;
@@ -129,58 +161,54 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
+  gap: 3px;
   color: var(--color-text-faint);
-  font-size: 0.7rem;
-  font-weight: 500;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   transition: color 0.15s;
   min-height: 44px;
 }
 
-.bottom-nav-item.active {
-  color: var(--color-accent);
-}
+.bottom-nav-item.active { color: var(--color-accent); }
 
 .bottom-nav-icon {
-  font-size: 1rem;
-  line-height: 1;
+  width: 22px;
+  height: 22px;
 }
 
-.bottom-nav-label {
-  font-size: 0.65rem;
-  letter-spacing: 0.01em;
-}
+.bottom-nav-label { font-size: 0.6rem; letter-spacing: 0.03em; }
 
-/* ─── Floating action button (mobile only) ───────────────────────────────── */
+/* ─── FAB (mobile only) ────────────────────────────────────────────────────── */
 
 .fab {
   display: flex;
   position: fixed;
-  bottom: 76px; /* above bottom nav */
+  bottom: 80px;
   right: 1.25rem;
   width: 52px;
   height: 52px;
   border-radius: var(--radius-full);
   background-color: var(--color-accent);
   color: white;
-  font-size: 1.5rem;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--color-accent) 40%, transparent);
   z-index: 40;
-  transition: transform 0.15s, opacity 0.15s;
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
 }
 
 .fab:hover {
-  transform: scale(1.05);
-  opacity: 0.9;
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--color-accent) 50%, transparent);
 }
 
-@media (min-width: 768px) {
-  .fab { display: none; }
-}
+.fab:active { transform: scale(0.96); }
 
-/* ─── Toast notifications ────────────────────────────────────────────────── */
+@media (min-width: 768px) { .fab { display: none; } }
+
+/* ─── Toast notifications ──────────────────────────────────────────────────── */
 
 .toast-stack {
   position: fixed;
@@ -190,9 +218,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  z-index: 100;
+  z-index: 200;
   min-width: 280px;
   max-width: calc(100vw - 2rem);
+  pointer-events: none;
 }
 
 @media (min-width: 768px) {
@@ -214,21 +243,25 @@
   background-color: var(--color-text-primary);
   color: var(--color-bg);
   font-size: 0.875rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  pointer-events: auto;
+  letter-spacing: -0.01em;
 }
 
 .toast[data-type="success"] { background-color: var(--color-success); color: white; }
-.toast[data-type="error"]   { background-color: var(--color-danger); color: white; }
+.toast[data-type="error"]   { background-color: var(--color-danger);  color: white; }
 .toast[data-type="warning"] { background-color: var(--color-warning); color: white; }
 
 .toast button {
-  font-size: 1rem;
   color: inherit;
-  opacity: 0.7;
-  padding: 0 0.25rem;
+  opacity: 0.65;
+  padding: 2px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
+  transition: opacity 0.15s;
 }
 
-.toast button:hover {
-  opacity: 1;
-}
+.toast button:hover { opacity: 1; }
