@@ -1,0 +1,94 @@
+<div class="page">
+  <div class="page-header">
+    <button type="button" class="back-btn" (click)="cancel()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </button>
+    <h1 class="page-title">{{ isEdit() ? 'Edit event' : 'Add event' }}</h1>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-card" novalidate>
+
+    <!-- Title -->
+    <div class="field">
+      <label for="title" class="field-label">Title <span class="required">*</span></label>
+      <input
+        id="title"
+        formControlName="title"
+        type="text"
+        class="field-input"
+        [class.invalid]="form.controls.title.invalid && form.controls.title.touched"
+        placeholder="e.g. Sarah's Birthday"
+        autocomplete="off" />
+      @if (form.controls.title.invalid && form.controls.title.touched) {
+        <span class="field-error">Title is required</span>
+      }
+    </div>
+
+    <!-- Type + Recurrence row -->
+    <div class="field-row">
+      <div class="field">
+        <label for="type" class="field-label">Type</label>
+        <select id="type" formControlName="type" class="field-select">
+          @for (t of EVENT_TYPES; track t.value) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label for="recurrence" class="field-label">Recurrence</label>
+        <select id="recurrence" formControlName="recurrence" class="field-select">
+          @for (r of RECURRENCE_TYPES; track r.value) {
+            <option [value]="r.value">{{ r.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Date -->
+    <div class="field">
+      <label class="field-label">Date <span class="required">*</span></label>
+      <app-date-input [(value)]="date" />
+      @if (!date() && form.dirty) {
+        <span class="field-error">Date is required</span>
+      }
+    </div>
+
+    <!-- Person -->
+    <div class="field">
+      <label for="personId" class="field-label">Person <span class="optional">(optional)</span></label>
+      <select id="personId" formControlName="personId" class="field-select">
+        <option value="">— No person linked —</option>
+        @for (p of allPeople(); track p.id) {
+          <option [value]="p.id">{{ p.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Description -->
+    <div class="field">
+      <label for="description" class="field-label">Description <span class="optional">(optional)</span></label>
+      <textarea
+        id="description"
+        formControlName="description"
+        class="field-textarea"
+        placeholder="Any details worth noting…"
+        rows="3"></textarea>
+    </div>
+
+    <!-- Tags -->
+    <div class="field">
+      <label class="field-label">Tags <span class="optional">(optional)</span></label>
+      <app-tag-input [(tags)]="tags" />
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn-ghost" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn-primary" [disabled]="form.invalid || !date() || saving()">
+        {{ saving() ? 'Saving…' : (isEdit() ? 'Save changes' : 'Add event') }}
+      </button>
+    </div>
+
+  </form>
+</div>

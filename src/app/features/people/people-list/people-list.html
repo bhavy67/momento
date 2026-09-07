@@ -1,0 +1,86 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">People</h1>
+    <a routerLink="/people/new" class="btn-primary">+ Add</a>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <span class="search-icon" aria-hidden="true">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/><path d="m11 11 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </span>
+    <input
+      class="search-input"
+      type="search"
+      placeholder="Search people…"
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+      aria-label="Search people" />
+  </div>
+
+  <!-- Relationship filter -->
+  <div class="filter-row" role="group" aria-label="Filter by relationship">
+    @for (r of RELATIONSHIPS; track r.value) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="filterRel() === r.value"
+        (click)="filterRel.set(r.value)">
+        {{ r.label }}
+      </button>
+    }
+  </div>
+
+  <!-- List -->
+  @if (filtered().length === 0) {
+    <div class="empty-state">
+      @if (allCount() === 0) {
+        <p class="empty-title">No people yet</p>
+        <p class="empty-sub">Add the people who matter to you.</p>
+        <a routerLink="/people/new" class="btn-primary" style="display:inline-block;margin-top:1rem">Add first person</a>
+      } @else {
+        <p class="empty-title">No matches</p>
+        <p class="empty-sub">Try a different name or filter.</p>
+      }
+    </div>
+  } @else {
+    <ul class="person-list" role="list">
+      @for (person of filtered(); track person.id) {
+        <li class="person-card">
+          <a [routerLink]="['/people', person.id]" class="person-card-link">
+            <div class="person-avatar" [attr.data-rel]="person.relationship">
+              {{ person.name.charAt(0).toUpperCase() }}
+            </div>
+            <div class="person-info">
+              <span class="person-name">{{ person.name }}</span>
+              <span class="person-meta">
+                <span class="rel-chip" [attr.data-rel]="person.relationship">{{ relLabel(person.relationship) }}</span>
+                @if (person.birthday) {
+                  <span class="birthday-text">{{ formatBirthday(person) }}</span>
+                }
+              </span>
+            </div>
+          </a>
+          <div class="person-actions">
+            <a [routerLink]="['/people', person.id, 'edit']" class="action-btn" aria-label="Edit person" title="Edit">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5 13.5 4.5 5.5 12.5H3.5v-2l8-8z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            </a>
+            <button type="button" class="action-btn action-btn--danger" aria-label="Delete person" title="Delete" (click)="confirmDelete(person.id)">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 5h10M6 5V3h4v2M6 8v5M10 8v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</div>
+
+<app-confirm-dialog
+  [open]="!!deletingId()"
+  title="Delete person?"
+  [message]="'Remove ' + (deletingPerson()?.name ?? 'this person') + '? Their events and gifts will also be deleted.'"
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="doDelete()"
+  (cancelled)="cancelDelete()" />

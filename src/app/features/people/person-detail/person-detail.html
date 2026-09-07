@@ -1,0 +1,92 @@
+@if (person(); as p) {
+  <div class="page">
+
+    <!-- Back + Edit -->
+    <div class="page-header">
+      <a routerLink="/people" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        People
+      </a>
+      <a [routerLink]="['/people', p.id, 'edit']" class="btn-outline">Edit</a>
+    </div>
+
+    <!-- Profile card -->
+    <div class="profile-card">
+      <div class="avatar">{{ p.name.charAt(0).toUpperCase() }}</div>
+      <div class="profile-body">
+        <h1 class="profile-name">{{ p.name }}</h1>
+        <div class="profile-meta">
+          <span class="rel-chip">{{ relLabel(p.relationship) }}</span>
+          @for (tag of p.tags; track tag) {
+            <span class="tag-chip">{{ tag }}</span>
+          }
+        </div>
+        @if (p.birthday) {
+          <div class="birthday-row">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2C8 2 5 5 5 7.5a3 3 0 0 0 6 0C11 5 8 2 8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 14v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span>{{ formatBirthday() }}</span>
+            @if (turningAge(); as age) {
+              <span class="age-badge">turning {{ age }}</span>
+            }
+          </div>
+        }
+        @if (p.notes) {
+          <p class="notes">{{ p.notes }}</p>
+        }
+      </div>
+    </div>
+
+    <!-- Events -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Events</h2>
+        <a [routerLink]="['/events/new']" [queryParams]="{ personId: p.id }" class="btn-outline btn-small">+ Add event</a>
+      </div>
+
+      @if (personEvents().length === 0) {
+        <div class="empty-events">
+          <p>No events linked yet.</p>
+          <a [routerLink]="['/events/new']" [queryParams]="{ personId: p.id }" class="link-accent">Add one →</a>
+        </div>
+      } @else {
+        <ul class="event-list" role="list">
+          @for (e of personEvents(); track e.id) {
+            <li class="event-row">
+              <a [routerLink]="['/events', e.id]" class="event-link">
+                <div class="event-main">
+                  <span class="event-title">{{ e.title }}</span>
+                  <span class="event-type-badge">{{ e.type }}</span>
+                </div>
+                <div class="event-countdown" [class.today]="countdownDays(e) === 0">
+                  {{ countdownLabel(e) }}
+                </div>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Danger zone -->
+    <div class="danger-zone">
+      <button type="button" class="btn-danger-outline" (click)="showDeleteConfirm.set(true)">
+        Delete {{ p.name }}
+      </button>
+    </div>
+
+  </div>
+} @else {
+  <div class="not-found">
+    <p>Person not found.</p>
+    <a routerLink="/people" class="link-accent">← Back to People</a>
+  </div>
+}
+
+<app-confirm-dialog
+  [open]="showDeleteConfirm()"
+  title="Delete person?"
+  [message]="'Remove ' + (person()?.name ?? '') + '? Their events and gifts will also be deleted.'"
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="deletePerson()"
+  (cancelled)="showDeleteConfirm.set(false)" />

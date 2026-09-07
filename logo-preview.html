@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Momento — Brand Identity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Design tokens ────────────────────────────────────────── */
+    :root {
+      --pg-bg:       #F2F1EE;
+      --pg-surface:  #FAFAF8;
+      --pg-border:   #E4E3DF;
+      --pg-text:     #1C1C1A;
+      --pg-muted:    #787770;
+      --pg-chip-bg:  #ECEAE6;
+
+      --m-bg:        #F9F8F5;
+      --m-surface:   #FFFFFF;
+      --m-text:      #1C1C1A;
+      --m-accent:    #C96A2E;
+      --m-ring:      #1C1C1A;
+      --m-gem:       #C96A2E;
+
+      --m-dark-bg:      #141412;
+      --m-dark-surface: #1E1E1B;
+      --m-dark-text:    #F0EFE9;
+      --m-dark-accent:  #D4763A;
+      --m-dark-ring:    #F0EFE9;
+      --m-dark-gem:     #D4763A;
+    }
+
+    [data-theme="dark"] {
+      --pg-bg:       #111110;
+      --pg-surface:  #1A1A18;
+      --pg-border:   #2A2A27;
+      --pg-text:     #F0EFE9;
+      --pg-muted:    #88877F;
+      --pg-chip-bg:  #222220;
+    }
+
+    /* ─── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--pg-bg);
+      color: var(--pg-text);
+      line-height: 1.6;
+      min-height: 100dvh;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    /* ─── Layout ───────────────────────────────────────────────── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--pg-border);
+      background: var(--pg-surface);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-mark svg {
+      width: 28px;
+      height: 28px;
+      --logo-ring: var(--pg-text);
+      --logo-gem: var(--m-accent);
+    }
+
+    .header-title {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: 20px;
+      color: var(--pg-text);
+      letter-spacing: -0.01em;
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--pg-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding-left: 16px;
+      border-left: 1px solid var(--pg-border);
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--pg-chip-bg);
+      border: 1px solid var(--pg-border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--pg-muted);
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .theme-toggle:hover { color: var(--pg-text); }
+    .theme-toggle svg { width: 14px; height: 14px; }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 60px 40px 100px; }
+
+    /* ─── Section headings ─────────────────────────────────────── */
+    .section { margin-bottom: 80px; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pg-muted);
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--pg-text);
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--pg-muted);
+      margin-bottom: 32px;
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ─── Mark sizes grid ──────────────────────────────────────── */
+    .mark-grid {
+      display: flex;
+      align-items: flex-end;
+      gap: 40px;
+      flex-wrap: wrap;
+      padding: 40px;
+      background: var(--pg-surface);
+      border: 1px solid var(--pg-border);
+      border-radius: 16px;
+    }
+
+    .mark-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mark-item svg {
+      --logo-ring: var(--pg-text);
+      --logo-gem: var(--m-accent);
+      display: block;
+    }
+
+    .mark-size-label {
+      font-size: 11px;
+      color: var(--pg-muted);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── Lockup ───────────────────────────────────────────────── */
+    .lockup-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      padding: 48px;
+      background: var(--pg-surface);
+      border: 1px solid var(--pg-border);
+      border-radius: 16px;
+    }
+
+    .lockup {
+      display: flex;
+      align-items: center;
+    }
+
+    .lockup svg {
+      --logo-ring: var(--pg-text);
+      --logo-gem: var(--m-accent);
+      flex-shrink: 0;
+    }
+
+    .lockup-word {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      color: var(--pg-text);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* ─── Context cards ────────────────────────────────────────── */
+    .context-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .context-card {
+      border-radius: 20px;
+      padding: 52px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      border: 1px solid transparent;
+    }
+
+    .context-card.light {
+      background: var(--m-bg);
+      border-color: #E0DEDB;
+    }
+
+    .context-card.dark {
+      background: var(--m-dark-bg);
+    }
+
+    .context-lockup {
+      display: flex;
+      align-items: center;
+    }
+
+    .context-mark {
+      display: flex;
+    }
+
+    .context-mark.light-mark svg {
+      --logo-ring: var(--m-ring);
+      --logo-gem:  var(--m-gem);
+    }
+
+    .context-mark.dark-mark svg {
+      --logo-ring: var(--m-dark-ring);
+      --logo-gem:  var(--m-dark-gem);
+    }
+
+    .context-wordmark.light { color: var(--m-text); }
+    .context-wordmark.dark  { color: var(--m-dark-text); }
+
+    .context-wordmark {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .context-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .context-label.light { color: #B0AEA8; }
+    .context-label.dark  { color: #4A4A45; }
+
+    /* ─── App icon mockup ──────────────────────────────────────── */
+    .icon-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 32px;
+      flex-wrap: wrap;
+      padding: 40px;
+      background: var(--pg-surface);
+      border: 1px solid var(--pg-border);
+      border-radius: 16px;
+    }
+
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--m-bg);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10), 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .app-icon svg {
+      --logo-ring: var(--m-ring);
+      --logo-gem:  var(--m-gem);
+    }
+
+    /* ─── Color palette ────────────────────────────────────────── */
+    .palette {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .swatch-color {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .swatch-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--pg-text);
+    }
+
+    .swatch-hex {
+      font-size: 11px;
+      color: var(--pg-muted);
+      font-variant-numeric: tabular-nums;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    .swatch-role {
+      font-size: 11px;
+      color: var(--pg-muted);
+    }
+
+    /* ─── Concept note ─────────────────────────────────────────── */
+    .concept-card {
+      background: var(--pg-surface);
+      border: 1px solid var(--pg-border);
+      border-radius: 16px;
+      padding: 36px 40px;
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .concept-mark svg {
+      width: 100px;
+      height: 100px;
+      --logo-ring: var(--pg-text);
+      --logo-gem: var(--m-accent);
+    }
+
+    .concept-text h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--pg-text);
+      letter-spacing: -0.01em;
+    }
+
+    .concept-text p {
+      font-size: 14px;
+      color: var(--pg-muted);
+      line-height: 1.75;
+      margin-bottom: 10px;
+      max-width: 520px;
+    }
+
+    .concept-text p:last-child { margin-bottom: 0; }
+
+    .concept-highlight {
+      color: var(--m-accent) !important;
+      font-weight: 500;
+    }
+
+    /* ─── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .page-header { padding: 16px 20px; }
+      .header-subtitle { display: none; }
+      main { padding: 40px 20px 80px; }
+      .mark-grid { padding: 24px; gap: 24px; }
+      .lockup-stack { padding: 28px; }
+      .context-row { grid-template-columns: 1fr; }
+      .concept-card { grid-template-columns: 1fr; }
+      .concept-mark { display: flex; justify-content: center; }
+      .concept-mark svg { width: 72px; height: 72px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Header ──────────────────────────────────────────────────── -->
+<header class="page-header">
+  <div class="header-brand">
+    <div class="header-mark">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="ring" d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke-width="7" stroke-linecap="round" stroke="var(--logo-ring, #1C1C1A)"/>
+        <circle class="gem" cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+      </svg>
+    </div>
+    <span class="header-title">Momento</span>
+    <span class="header-subtitle">Brand Identity</span>
+  </div>
+  <button class="theme-toggle" onclick="toggleTheme()">
+    <svg id="theme-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1.25"/>
+      <line x1="8" y1="1" x2="8" y2="2.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+      <line x1="8" y1="13.5" x2="8" y2="15" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+      <line x1="1" y1="8" x2="2.5" y2="8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+      <line x1="13.5" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+      <line x1="3.05" y1="3.05" x2="4.1" y2="4.1" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+      <line x1="11.9" y1="11.9" x2="12.95" y2="12.95" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+      <line x1="12.95" y1="3.05" x2="11.9" y2="4.1" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+      <line x1="4.1" y1="11.9" x2="3.05" y2="12.95" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+    </svg>
+    <span id="theme-label">Light</span>
+  </button>
+</header>
+
+<main>
+
+  <!-- ─── Concept ──────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="section-label">The Idea</div>
+    <div class="section-title">The Ring &amp; The Gem</div>
+    <div class="section-desc">A mark that means something — not just a letter in a circle.</div>
+    <div class="concept-card">
+      <div class="concept-mark">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+      </div>
+      <div class="concept-text">
+        <h3>Form follows feeling</h3>
+        <p>
+          The <span class="concept-highlight">300° arc</span> is a ring — both the jewellery you give someone you love,
+          and the cycle of a year. Dates come back. Time is circular, not linear. The arc
+          carries almost a full year in its sweep.
+        </p>
+        <p>
+          The <span class="concept-highlight">gap at 12 o'clock</span> is the moment: the exact instant a year resets,
+          where your reminder lives, where the important date falls. Not a void — an opening
+          in time.
+        </p>
+        <p>
+          The <span class="concept-highlight">gem in the gap</span> is the memento itself. Set like a stone in a ring,
+          it turns an abstract arc into something precious — a kept object, a marker that says
+          <em>this moment matters</em>. The word "momento" is Latin for memory;
+          the dot is the memory, held in the ring of time.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Mark at sizes ────────────────────────────────────────── -->
+  <section class="section">
+    <div class="section-label">The Mark</div>
+    <div class="section-title">Scale</div>
+    <div class="section-desc">Holds its shape from favicon to hero. Stroke weight and gem radius are fixed; only the rendered size changes.</div>
+    <div class="mark-grid">
+      <div class="mark-item">
+        <svg width="16" height="16" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="mark-size-label">16</span>
+      </div>
+      <div class="mark-item">
+        <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="mark-size-label">24</span>
+      </div>
+      <div class="mark-item">
+        <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="mark-size-label">32</span>
+      </div>
+      <div class="mark-item">
+        <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="mark-size-label">48</span>
+      </div>
+      <div class="mark-item">
+        <svg width="72" height="72" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="mark-size-label">72</span>
+      </div>
+      <div class="mark-item">
+        <svg width="128" height="128" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="mark-size-label">128</span>
+      </div>
+      <div class="mark-item">
+        <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="mark-size-label">200</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Horizontal lockup ─────────────────────────────────────── -->
+  <section class="section">
+    <div class="section-label">Wordmark</div>
+    <div class="section-title">Horizontal Lockup</div>
+    <div class="section-desc">DM Serif Display Italic paired with the mark. The typeface echoes the warmth of handwritten keepsakes — personal, considered, timeless.</div>
+    <div class="lockup-stack">
+
+      <!-- Small -->
+      <div class="lockup" style="gap:9px">
+        <svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="lockup-word" style="font-size:18px">Momento</span>
+      </div>
+
+      <!-- Medium -->
+      <div class="lockup" style="gap:13px">
+        <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="lockup-word" style="font-size:28px">Momento</span>
+      </div>
+
+      <!-- Large -->
+      <div class="lockup" style="gap:18px">
+        <svg width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="lockup-word" style="font-size:42px">Momento</span>
+      </div>
+
+      <!-- Hero -->
+      <div class="lockup" style="gap:24px">
+        <svg width="72" height="72" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+        </svg>
+        <span class="lockup-word" style="font-size:60px">Momento</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── On backgrounds ───────────────────────────────────────── -->
+  <section class="section">
+    <div class="section-label">Context</div>
+    <div class="section-title">On Brand Backgrounds</div>
+    <div class="section-desc">How the mark and wordmark feel in their natural environment — both themes read clearly and with the same weight.</div>
+    <div class="context-row">
+
+      <div class="context-card light">
+        <div class="context-lockup" style="gap:14px; align-items:center">
+          <div class="context-mark light-mark">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--logo-ring, #1C1C1A)" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="50" cy="16" r="6.5" fill="var(--logo-gem, #C96A2E)"/>
+            </svg>
+          </div>
+          <span class="context-wordmark light" style="font-size:33px">Momento</span>
+        </div>
+        <span class="context-label light">Light — #F9F8F5</span>
+      </div>
+
+      <div class="context-card dark">
+        <div class="context-lockup" style="gap:14px; align-items:center">
+          <div class="context-mark dark-mark">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="var(--m-dark-ring, #F0EFE9)" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="50" cy="16" r="6.5" fill="var(--m-dark-gem, #D4763A)"/>
+            </svg>
+          </div>
+          <span class="context-wordmark dark" style="font-size:33px">Momento</span>
+        </div>
+        <span class="context-label dark">Dark — #141412</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── App icon ──────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="section-label">App Icon</div>
+    <div class="section-title">PWA / Home Screen</div>
+    <div class="section-desc">The mark centered on the brand background, with proportional padding — as it'll appear on a phone home screen or desktop dock.</div>
+    <div class="icon-row">
+
+      <div class="icon-item">
+        <div class="app-icon" style="width:60px;height:60px;border-radius:14px">
+          <svg width="38" height="38" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="#1C1C1A" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="50" cy="16" r="6.5" fill="#C96A2E"/>
+          </svg>
+        </div>
+        <span class="mark-size-label">60 × 60</span>
+      </div>
+
+      <div class="icon-item">
+        <div class="app-icon" style="width:96px;height:96px;border-radius:22px">
+          <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="#1C1C1A" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="50" cy="16" r="6.5" fill="#C96A2E"/>
+          </svg>
+        </div>
+        <span class="mark-size-label">96 × 96</span>
+      </div>
+
+      <div class="icon-item">
+        <div class="app-icon" style="width:152px;height:152px;border-radius:34px">
+          <svg width="96" height="96" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="#1C1C1A" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="50" cy="16" r="6.5" fill="#C96A2E"/>
+          </svg>
+        </div>
+        <span class="mark-size-label">152 × 152</span>
+      </div>
+
+      <div class="icon-item">
+        <div class="app-icon" style="width:256px;height:256px;border-radius:56px">
+          <svg width="160" height="160" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 67 20.56 A 34 34 0 1 1 33 20.56" stroke="#1C1C1A" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="50" cy="16" r="6.5" fill="#C96A2E"/>
+          </svg>
+        </div>
+        <span class="mark-size-label">256 × 256</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── Colour palette ────────────────────────────────────────── -->
+  <section class="section">
+    <div class="section-label">Colour</div>
+    <div class="section-title">Brand Palette</div>
+    <div class="section-desc">All colours are CSS custom properties in the app. Swapping a theme means changing only <code style="font-size:12px;font-family:monospace;background:var(--pg-chip-bg);padding:1px 5px;border-radius:4px">:root</code> values in styles.css.</div>
+    <div class="palette">
+
+      <div class="swatch">
+        <div class="swatch-color" style="background:#C96A2E"></div>
+        <div class="swatch-name">Amber</div>
+        <div class="swatch-hex">#C96A2E</div>
+        <div class="swatch-role">Accent · Gem (light)</div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background:#D4763A"></div>
+        <div class="swatch-name">Amber Warm</div>
+        <div class="swatch-hex">#D4763A</div>
+        <div class="swatch-role">Accent · Gem (dark)</div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1C1C1A; border-color: rgba(255,255,255,0.12)"></div>
+        <div class="swatch-name">Ink</div>
+        <div class="swatch-hex">#1C1C1A</div>
+        <div class="swatch-role">Ring · Text (light)</div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F0EFE9; border-color:#D8D7D2"></div>
+        <div class="swatch-name">Parchment</div>
+        <div class="swatch-hex">#F0EFE9</div>
+        <div class="swatch-role">Ring · Text (dark)</div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F9F8F5; border-color:#D8D7D2"></div>
+        <div class="swatch-name">Linen</div>
+        <div class="swatch-hex">#F9F8F5</div>
+        <div class="swatch-role">Background (light)</div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background:#141412; border-color:rgba(255,255,255,0.08)"></div>
+        <div class="swatch-name">Charcoal</div>
+        <div class="swatch-hex">#141412</div>
+        <div class="swatch-role">Background (dark)</div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    document.getElementById('theme-label').textContent = next === 'dark' ? 'Dark' : 'Light';
+    // Sync moon/sun icon
+    const icon = document.getElementById('theme-icon');
+    if (next === 'dark') {
+      icon.innerHTML = `<path d="M13 8A5 5 0 1 1 8 3a3.5 3.5 0 0 0 5 5z" fill="currentColor"/>`;
+    } else {
+      icon.innerHTML = `
+        <circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1.25"/>
+        <line x1="8" y1="1" x2="8" y2="2.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+        <line x1="8" y1="13.5" x2="8" y2="15" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+        <line x1="1" y1="8" x2="2.5" y2="8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+        <line x1="13.5" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+        <line x1="3.05" y1="3.05" x2="4.1" y2="4.1" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+        <line x1="11.9" y1="11.9" x2="12.95" y2="12.95" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+        <line x1="12.95" y1="3.05" x2="11.9" y2="4.1" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+        <line x1="4.1" y1="11.9" x2="3.05" y2="12.95" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>`;
+    }
+  }
+</script>
+</body>
+</html>

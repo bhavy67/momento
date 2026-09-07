@@ -1,0 +1,37 @@
+<div class="date-input-row">
+  <!-- Month -->
+  <select [(ngModel)]="month" class="date-select" aria-label="Month">
+    <option [ngValue]="0" disabled>Month</option>
+    @for (m of MONTHS; track m.v) {
+      <option [ngValue]="m.v">{{ m.n }}</option>
+    }
+  </select>
+
+  <!-- Day -->
+  <select [(ngModel)]="day" class="date-select date-select--day" aria-label="Day" [disabled]="!month">
+    <option [ngValue]="0" disabled>Day</option>
+    @for (d of availableDays(); track d) {
+      <option [ngValue]="d">{{ d }}</option>
+    }
+  </select>
+
+  <!-- Year -->
+  @if (!yearUnknown) {
+    <input
+      [(ngModel)]="yearStr"
+      type="number"
+      class="date-input-year"
+      placeholder="Year"
+      min="1900"
+      max="2100"
+      aria-label="Year"
+      [disabled]="!month" />
+  }
+</div>
+
+@if (yearOptional() && month) {
+  <label class="year-unknown-label">
+    <input type="checkbox" [(ngModel)]="yearUnknown" class="year-unknown-check" />
+    Year unknown
+  </label>
+}

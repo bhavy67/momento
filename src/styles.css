@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/* ─── Design token mapping into Tailwind ─────────────────────────────────── */
+@theme {
+  /* Colors — all resolve through CSS custom properties so swapping
+     themes in Phase 8 only touches :root / [data-theme] below */
+  --color-bg:           var(--color-bg);
+  --color-surface:      var(--color-surface);
+  --color-surface-2:    var(--color-surface-2);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-muted:   var(--color-text-muted);
+  --color-text-faint:   var(--color-text-faint);
+  --color-border:       var(--color-border);
+  --color-accent:       var(--color-accent);
+  --color-accent-bg:    var(--color-accent-bg);
+  --color-success:      var(--color-success);
+  --color-warning:      var(--color-warning);
+  --color-danger:       var(--color-danger);
+
+  /* Typography — placeholder until Phase 8 brand decision */
+  --font-sans:    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-mono:    ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+
+  /* Border radius scale */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+}
+
+/* ─── Light mode (default) ───────────────────────────────────────────────── */
+:root {
+  --color-bg:           #F9F8F5;
+  --color-surface:      #FFFFFF;
+  --color-surface-2:    #F4F3EF;
+  --color-text-primary: #1C1C1A;
+  --color-text-muted:   #6B6B67;
+  --color-text-faint:   #A8A8A3;
+  --color-border:       #E8E8E3;
+  --color-accent:       #C96A2E;
+  --color-accent-bg:    #F5EDE4;
+  --color-success:      #3D9E6A;
+  --color-warning:      #D4A017;
+  --color-danger:       #C0392B;
+}
+
+/* ─── Dark mode ──────────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --color-bg:           #141412;
+  --color-surface:      #1E1E1B;
+  --color-surface-2:    #252522;
+  --color-text-primary: #F0EFE9;
+  --color-text-muted:   #9A9A95;
+  --color-text-faint:   #636360;
+  --color-border:       #2C2C28;
+  --color-accent:       #D4763A;
+  --color-accent-bg:    #2A1E15;
+  --color-success:      #4CAF82;
+  --color-warning:      #E0B422;
+  --color-danger:       #E05050;
+}
+
+/* Respect system preference when no explicit data-theme is set */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --color-bg:           #141412;
+    --color-surface:      #1E1E1B;
+    --color-surface-2:    #252522;
+    --color-text-primary: #F0EFE9;
+    --color-text-muted:   #9A9A95;
+    --color-text-faint:   #636360;
+    --color-border:       #2C2C28;
+    --color-accent:       #D4763A;
+    --color-accent-bg:    #2A1E15;
+    --color-success:      #4CAF82;
+    --color-warning:      #E0B422;
+    --color-danger:       #E05050;
+  }
+}
+
+/* ─── Global base ────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100dvh;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+}
+
+input, textarea, select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}

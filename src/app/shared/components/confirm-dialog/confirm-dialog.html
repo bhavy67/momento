@@ -1,0 +1,16 @@
+@if (open()) {
+  <div class="dialog-backdrop" (click)="cancelled.emit()">
+    <div class="dialog-card" (click)="$event.stopPropagation()" role="dialog" [attr.aria-label]="title()">
+      <h2 class="dialog-title">{{ title() }}</h2>
+      @if (message()) {
+        <p class="dialog-message">{{ message() }}</p>
+      }
+      <div class="dialog-actions">
+        <button type="button" class="btn-cancel" (click)="cancelled.emit()">Cancel</button>
+        <button type="button" class="btn-confirm" [class.btn-danger]="danger()" (click)="confirmed.emit()">
+          {{ confirmLabel() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

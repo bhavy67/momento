@@ -1,0 +1,17 @@
+<div class="tag-input-wrap" (click)="focusInput()">
+  @for (tag of tags(); track tag; let i = $index) {
+    <span class="tag-chip">
+      {{ tag }}
+      <button type="button" class="tag-remove" (click)="removeTag(i); $event.stopPropagation()" aria-label="Remove tag">×</button>
+    </span>
+  }
+  <input
+    #tagInput
+    class="tag-text-input"
+    [value]="draft()"
+    (input)="draft.set($any($event.target).value)"
+    (keydown)="onKeydown($event)"
+    (blur)="onBlur()"
+    placeholder="{{ tags().length ? '' : 'Add tags…' }}"
+    aria-label="Add tag" />
+</div>

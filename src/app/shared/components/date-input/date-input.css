@@ -1,0 +1,71 @@
+.date-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.date-select {
+  flex: 1 1 120px;
+  min-width: 0;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  appearance: auto;
+  cursor: pointer;
+}
+
+.date-select--day {
+  flex: 0 0 80px;
+}
+
+.date-select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.date-select:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.date-input-year {
+  flex: 0 0 90px;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+}
+
+.date-input-year:disabled { opacity: 0.4; }
+
+.date-input-year:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+/* Hide spinners on year field */
+.date-input-year::-webkit-outer-spin-button,
+.date-input-year::-webkit-inner-spin-button { -webkit-appearance: none; }
+.date-input-year[type=number] { -moz-appearance: textfield; }
+
+.year-unknown-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.year-unknown-check {
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}

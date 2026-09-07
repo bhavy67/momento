@@ -1,0 +1,87 @@
+<div class="app-shell">
+
+  <!-- Sidebar — md and up only -->
+  <nav class="sidebar" aria-label="Main navigation">
+    <div class="sidebar-brand">
+      <span class="sidebar-wordmark">Momento</span>
+    </div>
+
+    <ul class="sidebar-nav" role="list">
+      <li>
+        <a routerLink="/home" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon" aria-hidden="true">○</span>
+          Home
+        </a>
+      </li>
+      <li>
+        <a routerLink="/people" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon" aria-hidden="true">◇</span>
+          People
+        </a>
+      </li>
+      <li>
+        <a routerLink="/timeline" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon" aria-hidden="true">⋮</span>
+          Timeline
+        </a>
+      </li>
+      <li>
+        <a routerLink="/settings" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon" aria-hidden="true">◈</span>
+          Settings
+        </a>
+      </li>
+    </ul>
+
+    <button class="sidebar-add-btn" (click)="ui.openQuickAdd()" type="button">
+      + Add
+    </button>
+  </nav>
+
+  <!-- Main content -->
+  <main class="content" id="main-content">
+    <router-outlet />
+  </main>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a routerLink="/home" routerLinkActive="active" class="bottom-nav-item">
+      <span class="bottom-nav-icon" aria-hidden="true">○</span>
+      <span class="bottom-nav-label">Home</span>
+    </a>
+    <a routerLink="/people" routerLinkActive="active" class="bottom-nav-item">
+      <span class="bottom-nav-icon" aria-hidden="true">◇</span>
+      <span class="bottom-nav-label">People</span>
+    </a>
+    <a routerLink="/timeline" routerLinkActive="active" class="bottom-nav-item">
+      <span class="bottom-nav-icon" aria-hidden="true">⋮</span>
+      <span class="bottom-nav-label">Timeline</span>
+    </a>
+    <a routerLink="/settings" routerLinkActive="active" class="bottom-nav-item">
+      <span class="bottom-nav-icon" aria-hidden="true">◈</span>
+      <span class="bottom-nav-label">Settings</span>
+    </a>
+  </nav>
+
+  <!-- FAB — mobile only -->
+  <button
+    class="fab"
+    (click)="ui.openQuickAdd()"
+    type="button"
+    aria-label="Add new event or person">
+    +
+  </button>
+
+  <!-- Notification toasts -->
+  @if (ui.notifications().length > 0) {
+    <div class="toast-stack" aria-live="polite" aria-atomic="false">
+      @for (n of ui.notifications(); track n.id) {
+        <div class="toast" [attr.data-type]="n.type">
+          <span>{{ n.message }}</span>
+          <button (click)="ui.dismiss(n.id)" aria-label="Dismiss notification" type="button">×</button>
+        </div>
+      }
+    </div>
+  }
+
+</div>

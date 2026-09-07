@@ -1,0 +1,70 @@
+<div class="page">
+  <div class="page-header">
+    <button type="button" class="back-btn" (click)="cancel()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </button>
+    <h1 class="page-title">{{ isEdit() ? 'Edit person' : 'Add person' }}</h1>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-card" novalidate>
+
+    <!-- Name -->
+    <div class="field">
+      <label for="name" class="field-label">Name <span class="required">*</span></label>
+      <input
+        id="name"
+        formControlName="name"
+        type="text"
+        class="field-input"
+        [class.invalid]="form.controls.name.invalid && form.controls.name.touched"
+        placeholder="Full name"
+        autocomplete="off" />
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <span class="field-error">Name is required</span>
+      }
+    </div>
+
+    <!-- Relationship -->
+    <div class="field">
+      <label for="rel" class="field-label">Relationship</label>
+      <select id="rel" formControlName="relationship" class="field-select">
+        @for (r of RELATIONSHIPS; track r.value) {
+          <option [value]="r.value">{{ r.label }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Birthday -->
+    <div class="field">
+      <label class="field-label">Birthday <span class="optional">(optional)</span></label>
+      <app-date-input [(value)]="birthday" [yearOptional]="true" />
+    </div>
+
+    <!-- Notes -->
+    <div class="field">
+      <label for="notes" class="field-label">Notes <span class="optional">(optional)</span></label>
+      <textarea
+        id="notes"
+        formControlName="notes"
+        class="field-textarea"
+        placeholder="Anything worth remembering…"
+        rows="3"></textarea>
+    </div>
+
+    <!-- Tags -->
+    <div class="field">
+      <label class="field-label">Tags <span class="optional">(optional)</span></label>
+      <app-tag-input [(tags)]="tags" />
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn-ghost" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn-primary" [disabled]="form.invalid || saving()">
+        {{ saving() ? 'Saving…' : (isEdit() ? 'Save changes' : 'Add person') }}
+      </button>
+    </div>
+
+  </form>
+</div>

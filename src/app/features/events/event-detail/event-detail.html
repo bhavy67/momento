@@ -1,0 +1,121 @@
+@if (event(); as e) {
+  <div class="page">
+
+    <!-- Header -->
+    <div class="page-header">
+      <a routerLink="/people" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </a>
+      <a [routerLink]="['/events', e.id, 'edit']" class="btn-outline">Edit</a>
+    </div>
+
+    <!-- Event card -->
+    <div class="event-card">
+      <div class="event-card-top">
+        <div>
+          <h1 class="event-title">{{ e.title }}</h1>
+          <div class="event-badges">
+            <span class="badge badge--type">{{ typeLabel(e.type) }}</span>
+            <span class="badge badge--rec">{{ recurrenceLabel(e.recurrence.type) }}</span>
+          </div>
+        </div>
+        <!-- Countdown -->
+        <div class="countdown-block" [class.today]="daysAway() === 0">
+          <span class="countdown-number">{{ daysAway() === 0 ? '🎉' : daysAway() }}</span>
+          <span class="countdown-unit">{{ daysAway() === 0 ? 'Today!' : (daysAway() === 1 ? 'day' : 'days') }}</span>
+        </div>
+      </div>
+
+      <dl class="event-details">
+        <div class="detail-row">
+          <dt>Date</dt>
+          <dd>{{ formatEventDate() }}</dd>
+        </div>
+        @if (yearsCount() !== null) {
+          <div class="detail-row">
+            <dt>Years</dt>
+            <dd>{{ yearsCount() }} year{{ yearsCount() === 1 ? '' : 's' }}</dd>
+          </div>
+        }
+        @if (person(); as p) {
+          <div class="detail-row">
+            <dt>Person</dt>
+            <dd><a [routerLink]="['/people', p.id]" class="link-accent">{{ p.name }}</a></dd>
+          </div>
+        }
+        @if (e.description) {
+          <div class="detail-row">
+            <dt>Note</dt>
+            <dd>{{ e.description }}</dd>
+          </div>
+        }
+        @if (e.tags.length) {
+          <div class="detail-row">
+            <dt>Tags</dt>
+            <dd class="tags-row">
+              @for (tag of e.tags; track tag) {
+                <span class="tag-chip">{{ tag }}</span>
+              }
+            </dd>
+          </div>
+        }
+      </dl>
+
+      @if (milestoneInfo(); as ms) {
+        <div class="milestone-banner">
+          ✦ {{ ms }}
+        </div>
+      }
+    </div>
+
+    <!-- Upcoming occurrences -->
+    @if (e.recurrence.type !== 'none' && nextOccurrences().length) {
+      <div class="section">
+        <h2 class="section-title">Coming up</h2>
+        <ul class="occurrence-list" role="list">
+          @for (occ of nextOccurrences(); track occ.label) {
+            <li class="occurrence-row">
+              <span class="occ-label">{{ occ.label }}</span>
+              <span class="occ-days">{{ formatCountdown(occ.days) }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button type="button" class="btn-archive" (click)="showArchiveConfirm.set(true)">
+        Archive
+      </button>
+      <button type="button" class="btn-danger-outline" (click)="showDeleteConfirm.set(true)">
+        Delete event
+      </button>
+    </div>
+
+  </div>
+} @else {
+  <div class="not-found">
+    <p>Event not found.</p>
+    <a routerLink="/people" class="link-accent">← Back</a>
+  </div>
+}
+
+<app-confirm-dialog
+  [open]="showArchiveConfirm()"
+  title="Archive event?"
+  message="This event will be hidden from your upcoming list. You can still access it in the timeline."
+  confirmLabel="Archive"
+  [danger]="false"
+  (confirmed)="archiveEvent()"
+  (cancelled)="showArchiveConfirm.set(false)" />
+
+<app-confirm-dialog
+  [open]="showDeleteConfirm()"
+  title="Delete event?"
+  message="This event will be permanently deleted."
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="deleteEvent()"
+  (cancelled)="showDeleteConfirm.set(false)" />
