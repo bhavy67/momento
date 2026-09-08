@@ -3,10 +3,17 @@
 
     <!-- Header -->
     <div class="page-header">
-      <a routerLink="/people" class="back-btn">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Back
-      </a>
+      @if (person(); as p) {
+        <a [routerLink]="['/people', p.id]" class="back-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          {{ p.name }}
+        </a>
+      } @else {
+        <a routerLink="/people" class="back-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </a>
+      }
       <a [routerLink]="['/events', e.id, 'edit']" class="btn-outline">Edit</a>
     </div>
 
@@ -63,11 +70,65 @@
       </dl>
 
       @if (milestoneInfo(); as ms) {
-        <div class="milestone-banner">
-          ✦ {{ ms }}
-        </div>
+        <div class="milestone-banner">✦ {{ ms }}</div>
       }
     </div>
+
+    <!-- Quick actions (if linked to a person) -->
+    @if (person(); as p) {
+      <div class="quick-actions">
+        <a [routerLink]="['/gifts/new']" [queryParams]="{ personId: p.id, eventId: e.id }" class="action-btn">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Add gift
+        </a>
+        <a [routerLink]="['/memories/new']" [queryParams]="{ personId: p.id, eventId: e.id }" class="action-btn">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Add memory
+        </a>
+      </div>
+    }
+
+    <!-- Last year context -->
+    @if (lastYearContext(); as ctx) {
+      <div class="last-year-card">
+        <div class="last-year-header">
+          <span class="last-year-label">Last year ({{ ctx.year }})</span>
+        </div>
+        @if (ctx.gift; as g) {
+          <div class="last-year-row">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="2" y="6" width="12" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M1 6h14M8 6V15M5 6c0-1.5 1.5-3 3-2s1.5 1.5 0 2M11 6c0-1.5-1.5-3-3-2S6.5 5.5 8 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            <div class="last-year-content">
+              <span class="last-year-text">{{ g.description }}</span>
+              <span class="last-year-status" [attr.data-status]="g.status">{{ giftStatusLabel(g.status) }}</span>
+              @if (g.notes) {
+                <span class="last-year-notes">"{{ g.notes }}"</span>
+              }
+            </div>
+          </div>
+        }
+        @if (ctx.memory; as mem) {
+          <div class="last-year-row">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M2 3h12v9l-6 2.5L2 12V3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            </svg>
+            <div class="last-year-content">
+              @if (mem.title) {
+                <span class="last-year-text">{{ mem.title }}</span>
+              }
+              <span class="last-year-notes">"{{ mem.note.length > 100 ? mem.note.slice(0, 100) + '…' : mem.note }}"</span>
+              <a [routerLink]="['/memories', mem.id]" class="last-year-link">Read →</a>
+            </div>
+          </div>
+        }
+      </div>
+    }
 
     <!-- Upcoming occurrences -->
     @if (e.recurrence.type !== 'none' && nextOccurrences().length) {
@@ -84,7 +145,7 @@
       </div>
     }
 
-    <!-- Actions -->
+    <!-- Danger actions -->
     <div class="action-row">
       <button type="button" class="btn-archive" (click)="showArchiveConfirm.set(true)">
         Archive

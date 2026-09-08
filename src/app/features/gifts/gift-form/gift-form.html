@@ -1,0 +1,112 @@
+<div class="page">
+  <div class="page-header">
+    <button type="button" class="back-btn" (click)="cancel()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </button>
+    <h1 class="page-title">{{ isEdit() ? 'Edit gift' : 'Add gift' }}</h1>
+  </div>
+
+  @if (personName()) {
+    <p class="for-person">For <strong>{{ personName() }}</strong></p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-card" novalidate>
+
+    <!-- Description -->
+    <div class="field">
+      <label for="description" class="field-label">Description <span class="required">*</span></label>
+      <input
+        id="description"
+        formControlName="description"
+        type="text"
+        class="field-input"
+        [class.invalid]="form.controls.description.invalid && form.controls.description.touched"
+        placeholder="e.g. Blue leather wallet, Dinner at Nobu…"
+        autocomplete="off" />
+      @if (form.controls.description.invalid && form.controls.description.touched) {
+        <span class="field-error">Description is required</span>
+      }
+    </div>
+
+    <!-- Status -->
+    <div class="field">
+      <label for="status" class="field-label">Status <span class="required">*</span></label>
+      <select id="status" formControlName="status" class="field-select">
+        @for (s of STATUSES; track s.value) {
+          <option [value]="s.value">{{ s.label }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Year + Price row -->
+    <div class="field-row">
+      <div class="field">
+        <label for="year" class="field-label">Year <span class="required">*</span></label>
+        <input
+          id="year"
+          formControlName="year"
+          type="number"
+          class="field-input"
+          min="1900"
+          max="2100" />
+      </div>
+      <div class="field">
+        <label for="price" class="field-label">Price <span class="optional">(optional)</span></label>
+        <input
+          id="price"
+          formControlName="price"
+          type="number"
+          class="field-input"
+          placeholder="0.00"
+          min="0"
+          step="0.01" />
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="field">
+      <label for="notes" class="field-label">Notes <span class="optional">(optional)</span></label>
+      <textarea
+        id="notes"
+        formControlName="notes"
+        class="field-textarea"
+        placeholder="Size, colour, where to buy, how it was received…"
+        rows="3"></textarea>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      @if (isEdit()) {
+        <button type="button" class="btn-danger-ghost" (click)="showDeleteConfirm.set(true)">Delete</button>
+      }
+      <button type="button" class="btn-ghost" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn-primary" [disabled]="form.invalid || saving()">
+        {{ saving() ? 'Saving…' : (isEdit() ? 'Save changes' : 'Add gift') }}
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<!-- Delete confirm -->
+<app-confirm-dialog
+  [open]="showDeleteConfirm()"
+  title="Delete gift?"
+  message="This gift will be permanently removed."
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="deleteGift()"
+  (cancelled)="showDeleteConfirm.set(false)" />
+
+<!-- Memory prompt after marking as given -->
+<app-confirm-dialog
+  [open]="showMemoryPrompt()"
+  title="Gift marked as given 🎁"
+  message="Want to add a memory about how it went?"
+  confirmLabel="Add memory"
+  [danger]="false"
+  (confirmed)="goToMemoryForm()"
+  (cancelled)="cancel()" />

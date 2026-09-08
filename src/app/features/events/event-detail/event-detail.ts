@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { Router, RouterLink } from '@angular/router';
 import { EventsService } from '@core/services/events.service';
 import { PeopleService } from '@core/services/people.service';
+import { GiftsService } from '@core/services/gifts.service';
+import { MemoriesService } from '@core/services/memories.service';
 import { UiStateService } from '@core/services/ui-state.service';
 import { ConfirmDialog } from '@shared/components/confirm-dialog/confirm-dialog';
 import {
@@ -20,10 +22,12 @@ import { getNextOccurrences } from '@utils/recurrence';
 export class EventDetail {
   readonly id = input.required<string>();
 
-  private readonly eventsService = inject(EventsService);
-  private readonly people        = inject(PeopleService);
-  private readonly ui            = inject(UiStateService);
-  private readonly router        = inject(Router);
+  private readonly eventsService   = inject(EventsService);
+  private readonly people          = inject(PeopleService);
+  private readonly gifts           = inject(GiftsService);
+  private readonly memories        = inject(MemoriesService);
+  private readonly ui              = inject(UiStateService);
+  private readonly router          = inject(Router);
 
   protected readonly showDeleteConfirm  = signal(false);
   protected readonly showArchiveConfirm = signal(false);
@@ -67,6 +71,27 @@ export class EventDetail {
     return null;
   });
 
+  protected readonly lastYearContext = computed(() => {
+    const e = this.event();
+    if (!e?.personId) return null;
+
+    const prevYear  = new Date().getFullYear() - 1;
+    const yearStart = new Date(prevYear, 0, 1).getTime();
+    const yearEnd   = new Date(prevYear, 11, 31, 23, 59, 59, 999).getTime();
+
+    const personGifts = this.gifts.all()
+      .filter(g => g.personId === e.personId && g.year === prevYear);
+    const topGift = personGifts.find(g => g.status === 'given')
+      ?? personGifts.find(g => g.status === 'purchased')
+      ?? personGifts[0];
+
+    const memory = this.memories.allChronological()
+      .find(m => m.eventId === e.id && m.date >= yearStart && m.date <= yearEnd);
+
+    if (!topGift && !memory) return null;
+    return { gift: topGift, memory, year: prevYear };
+  });
+
   protected formatEventDate(): string {
     const e = this.event();
     return e ? formatLocalDate(e.date) : '';
@@ -82,6 +107,10 @@ export class EventDetail {
     if (r === 'yearly')  return 'Every year';
     if (r === 'monthly') return 'Every month';
     return 'One-time';
+  }
+
+  protected giftStatusLabel(s: string): string {
+    return { idea: 'Idea', planned: 'Planned', purchased: 'Purchased', given: 'Given' }[s] ?? s;
   }
 
   protected async archiveEvent(): Promise<void> {

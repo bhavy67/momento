@@ -55,6 +55,36 @@ export const routes: Routes = [
     title: 'Edit event · Momento',
   },
   {
+    path: 'gifts/new',
+    loadComponent: () =>
+      import('@features/gifts/gift-form/gift-form').then(m => m.GiftForm),
+    title: 'Add gift · Momento',
+  },
+  {
+    path: 'gifts/:id/edit',
+    loadComponent: () =>
+      import('@features/gifts/gift-form/gift-form').then(m => m.GiftForm),
+    title: 'Edit gift · Momento',
+  },
+  {
+    path: 'memories/new',
+    loadComponent: () =>
+      import('@features/memories/memory-form/memory-form').then(m => m.MemoryForm),
+    title: 'Add memory · Momento',
+  },
+  {
+    path: 'memories/:id',
+    loadComponent: () =>
+      import('@features/memories/memory-detail/memory-detail').then(m => m.MemoryDetail),
+    title: 'Memory · Momento',
+  },
+  {
+    path: 'memories/:id/edit',
+    loadComponent: () =>
+      import('@features/memories/memory-form/memory-form').then(m => m.MemoryForm),
+    title: 'Edit memory · Momento',
+  },
+  {
     path: 'timeline',
     loadComponent: () =>
       import('@features/timeline/timeline').then(m => m.Timeline),

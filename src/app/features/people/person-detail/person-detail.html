@@ -185,15 +185,17 @@
               <ul class="gift-list" role="list">
                 @for (gift of group.gifts; track gift.id) {
                   <li class="gift-row">
-                    <div class="gift-desc">{{ gift.description }}</div>
-                    <div class="gift-right">
-                      @if (gift.price) {
-                        <span class="gift-price">${{ gift.price }}</span>
-                      }
-                      <span class="gift-status" [attr.data-status]="gift.status">
-                        {{ giftStatusLabel(gift.status) }}
-                      </span>
-                    </div>
+                    <a [routerLink]="['/gifts', gift.id, 'edit']" class="gift-link">
+                      <div class="gift-desc">{{ gift.description }}</div>
+                      <div class="gift-right">
+                        @if (gift.price) {
+                          <span class="gift-price">${{ gift.price }}</span>
+                        }
+                        <span class="gift-status" [attr.data-status]="gift.status">
+                          {{ giftStatusLabel(gift.status) }}
+                        </span>
+                      </div>
+                    </a>
                   </li>
                 }
               </ul>
@@ -221,11 +223,13 @@
           <ul class="memory-list" role="list">
             @for (m of personMemories(); track m.id) {
               <li class="memory-row">
-                <div class="memory-date">{{ formatMemoryDate(m.date) }}</div>
-                @if (m.title) {
-                  <div class="memory-title">{{ m.title }}</div>
-                }
-                <p class="memory-note">{{ m.note }}</p>
+                <a [routerLink]="['/memories', m.id]" class="memory-link">
+                  <div class="memory-date">{{ formatMemoryDate(m.date) }}</div>
+                  @if (m.title) {
+                    <div class="memory-title">{{ m.title }}</div>
+                  }
+                  <p class="memory-note">{{ m.note }}</p>
+                </a>
               </li>
             }
           </ul>

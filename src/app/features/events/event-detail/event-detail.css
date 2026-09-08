@@ -170,6 +170,105 @@
   letter-spacing: -0.01em;
 }
 
+/* Quick actions */
+.quick-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  transition: all 0.15s;
+}
+
+.action-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+/* Last year context */
+.last-year-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.125rem;
+  margin-bottom: 1.5rem;
+}
+
+.last-year-header { margin-bottom: 0.75rem; }
+
+.last-year-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-text-faint);
+}
+
+.last-year-row {
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+  padding: 0.5rem 0;
+  color: var(--color-text-faint);
+}
+
+.last-year-row + .last-year-row {
+  border-top: 1px solid var(--color-border);
+}
+
+.last-year-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.last-year-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.last-year-status {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  align-self: flex-start;
+}
+
+.last-year-status[data-status="given"]     { background: var(--color-accent-bg); color: var(--color-accent); }
+.last-year-status[data-status="purchased"] { background: #ECFDF5; color: #0F7B50; }
+.last-year-status[data-status="planned"]   { background: #EBF5FF; color: #1A6FC4; }
+.last-year-status[data-status="idea"]      { background: var(--color-surface-2); color: var(--color-text-faint); }
+
+.last-year-notes {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.last-year-link {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
 /* Section */
 .section { margin-bottom: 1.5rem; }
 
