@@ -61,6 +61,16 @@
       </li>
     </ul>
 
+    <!-- Search -->
+    <button type="button" class="sidebar-search-btn" (click)="ui.openSearch()">
+      <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      Search
+      <kbd class="sidebar-kbd">⌘K</kbd>
+    </button>
+
     <!-- Add button -->
     <a routerLink="/people/new" class="sidebar-add-btn">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -122,6 +132,11 @@
       <path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
     </svg>
   </a>
+
+  <!-- ── Search overlay ───────────────────────────────────────────── -->
+  @if (ui.searchOpen()) {
+    <app-search-overlay (closed)="ui.closeSearch()" />
+  }
 
   <!-- ── Toast notifications ────────────────────────────────────── -->
   @if (ui.notifications().length > 0) {

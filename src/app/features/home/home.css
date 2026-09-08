@@ -23,7 +23,25 @@
 
 .greeting-mark svg { display: block; width: 100%; height: 100%; }
 
-.greeting-text { min-width: 0; }
+.greeting-text { min-width: 0; flex: 1; }
+
+.search-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-faint);
+  flex-shrink: 0;
+  transition: all 0.15s;
+  margin-left: auto;
+}
+
+.search-trigger:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+}
 
 .greeting-label {
   font-size: 0.78rem;

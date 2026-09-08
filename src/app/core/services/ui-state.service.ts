@@ -28,4 +28,10 @@ export class UiStateService {
 
   openNavDrawer(): void { this.navDrawerOpen.set(true); }
   closeNavDrawer(): void { this.navDrawerOpen.set(false); }
+
+  // ─── Search overlay ───────────────────────────────────────────────────────
+  readonly searchOpen = signal(false);
+
+  openSearch(): void  { this.searchOpen.set(true);  }
+  closeSearch(): void { this.searchOpen.set(false); }
 }

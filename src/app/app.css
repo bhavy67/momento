@@ -103,6 +103,42 @@
 
 .nav-link.active .nav-icon { opacity: 1; }
 
+/* ── Sidebar Search button ───────────────────────────────────────────────── */
+
+.sidebar-search-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  transition: all 0.15s;
+  letter-spacing: -0.01em;
+  margin-top: 0.5rem;
+}
+
+.sidebar-search-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.sidebar-kbd {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 5px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-faint);
+  background: var(--color-surface);
+  letter-spacing: 0;
+}
+
 /* ── Sidebar Add button ──────────────────────────────────────────────────── */
 
 .sidebar-add-btn {

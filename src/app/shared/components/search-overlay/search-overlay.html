@@ -1,0 +1,172 @@
+<!-- Backdrop -->
+<div class="backdrop" (click)="close()" aria-hidden="true"></div>
+
+<!-- Panel -->
+<div class="panel" (keydown)="onKeyDown($event)">
+
+  <!-- Input row -->
+  <div class="input-row">
+    <svg class="search-icon" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <input
+      #searchInput
+      type="search"
+      class="search-input"
+      [value]="draft()"
+      (input)="onInput($event)"
+      placeholder="Search people, events, memories, gifts…"
+      autocomplete="off"
+      spellcheck="false"
+      aria-label="Search"
+      aria-autocomplete="list"
+      aria-controls="search-results" />
+    @if (draft()) {
+      <button type="button" class="clear-btn" (click)="close()" aria-label="Close search">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    } @else {
+      <kbd class="kbd-hint">Esc</kbd>
+    }
+  </div>
+
+  <!-- Results area -->
+  <div id="search-results" class="results-area" role="listbox">
+
+    @if (showNoResults()) {
+      <div class="no-results">
+        <span class="no-results-icon" aria-hidden="true">🔍</span>
+        <p class="no-results-text">No results for <strong>"{{ draft() }}"</strong></p>
+        <p class="no-results-hint">Try a different word or check spelling</p>
+      </div>
+
+    } @else if (results(); as res) {
+
+      <!-- People -->
+      @if (res.people.length > 0) {
+        <div class="result-group">
+          <div class="group-label">People</div>
+          @for (p of res.people; track p.id; let i = $index) {
+            <a
+              [routerLink]="['/people', p.id]"
+              (click)="close()"
+              class="result-item"
+              [class.is-focused]="isFocused(groupOffset('person') + i)"
+              role="option"
+              [attr.aria-selected]="isFocused(groupOffset('person') + i)">
+              <div class="result-avatar">{{ p.name.charAt(0).toUpperCase() }}</div>
+              <div class="result-body">
+                <span class="result-title">{{ p.name }}</span>
+                <span class="result-sub">{{ relLabel(p.relationship) }}</span>
+              </div>
+              <svg class="result-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          }
+        </div>
+      }
+
+      <!-- Events -->
+      @if (res.events.length > 0) {
+        <div class="result-group">
+          <div class="group-label">Events</div>
+          @for (e of res.events; track e.id; let i = $index) {
+            <a
+              [routerLink]="['/events', e.id]"
+              (click)="close()"
+              class="result-item"
+              [class.is-focused]="isFocused(groupOffset('event') + i)"
+              role="option"
+              [attr.aria-selected]="isFocused(groupOffset('event') + i)">
+              <div class="result-type-icon">
+                {{ e.type === 'birthday' ? '🎂' : e.type === 'anniversary' ? '♥' : e.type === 'milestone' ? '✦' : '○' }}
+              </div>
+              <div class="result-body">
+                <span class="result-title">{{ e.title }}</span>
+                <span class="result-sub">{{ typeLabel(e.type) }}</span>
+              </div>
+              <svg class="result-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          }
+        </div>
+      }
+
+      <!-- Memories -->
+      @if (res.memories.length > 0) {
+        <div class="result-group">
+          <div class="group-label">Memories</div>
+          @for (m of res.memories; track m.id; let i = $index) {
+            <a
+              [routerLink]="['/memories', m.id]"
+              (click)="close()"
+              class="result-item"
+              [class.is-focused]="isFocused(groupOffset('memory') + i)"
+              role="option"
+              [attr.aria-selected]="isFocused(groupOffset('memory') + i)">
+              <div class="result-type-icon">✨</div>
+              <div class="result-body">
+                <span class="result-title">{{ m.title || 'Memory' }}</span>
+                <span class="result-sub">{{ m.note.length > 60 ? m.note.slice(0, 60) + '…' : m.note }}</span>
+              </div>
+              <svg class="result-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          }
+        </div>
+      }
+
+      <!-- Gifts -->
+      @if (res.gifts.length > 0) {
+        <div class="result-group">
+          <div class="group-label">Gifts</div>
+          @for (g of res.gifts; track g.id; let i = $index) {
+            <a
+              [routerLink]="['/gifts', g.id, 'edit']"
+              (click)="close()"
+              class="result-item"
+              [class.is-focused]="isFocused(groupOffset('gift') + i)"
+              role="option"
+              [attr.aria-selected]="isFocused(groupOffset('gift') + i)">
+              <div class="result-type-icon">🎁</div>
+              <div class="result-body">
+                <span class="result-title">{{ g.description }}</span>
+                <span class="result-sub">{{ statusLabel(g.status) }} · {{ g.year }}</span>
+              </div>
+              <svg class="result-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          }
+        </div>
+      }
+
+    } @else if (!isSearching()) {
+      <!-- Idle hint -->
+      <div class="search-hint">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="9" cy="9" r="6" stroke="var(--color-border)" stroke-width="1.5"/>
+          <path d="M13.5 13.5L17 17" stroke="var(--color-border)" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Search across people, events, memories, and gifts</span>
+      </div>
+    }
+
+  </div>
+
+  <!-- Footer hint -->
+  <div class="panel-footer" aria-hidden="true">
+    <span class="hint-key">↑↓</span> navigate
+    <span class="hint-sep">·</span>
+    <span class="hint-key">↵</span> open
+    <span class="hint-sep">·</span>
+    <span class="hint-key">esc</span> close
+  </div>
+
+</div>
