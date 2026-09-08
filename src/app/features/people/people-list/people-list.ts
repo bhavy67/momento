@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { PeopleService } from '@core/services/people.service';
 import { UiStateService } from '@core/services/ui-state.service';
 import { ConfirmDialog } from '@shared/components/confirm-dialog/confirm-dialog';
+import { TooltipDirective } from '@shared/directives/tooltip.directive';
 import { formatLocalDate } from '@utils/dates';
 import type { Person, Relationship } from '@types';
 
@@ -18,7 +19,7 @@ const RELATIONSHIPS: { value: Relationship | null; label: string }[] = [
 @Component({
   selector: 'app-people-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, ConfirmDialog],
+  imports: [RouterLink, ConfirmDialog, TooltipDirective],
   templateUrl: './people-list.html',
   styleUrl: './people-list.css',
 })

@@ -83,6 +83,25 @@
 
   <!-- ── Main content ───────────────────────────────────────────── -->
   <main class="content" id="main-content">
+
+    <!-- ── Mobile top bar (hidden on desktop where sidebar exists) ── -->
+    <header class="mobile-topbar">
+      <a routerLink="/home" class="mobile-brand" aria-label="Momento home">
+        <svg class="mobile-brand-mark" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+          <path d="M 67 20.56 A 34 34 0 1 1 33 20.56"
+                stroke="var(--color-text-primary)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="50" cy="16" r="6.5" fill="var(--color-accent)"/>
+        </svg>
+        <span class="mobile-brand-name">Momento</span>
+      </a>
+      <button type="button" class="mobile-search-btn" (click)="ui.openSearch()" aria-label="Search" tooltip="Search" tooltipPos="bottom">
+        <svg width="19" height="19" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
     <router-outlet />
   </main>
 
@@ -127,7 +146,7 @@
   </nav>
 
   <!-- ── FAB (mobile only) ──────────────────────────────────────── -->
-  <a routerLink="/people/new" class="fab" aria-label="Add person">
+  <a routerLink="/people/new" class="fab" aria-label="Add person" tooltip="Add person" tooltipPos="left">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
     </svg>
@@ -144,7 +163,7 @@
       @for (n of ui.notifications(); track n.id) {
         <div class="toast" [attr.data-type]="n.type">
           <span>{{ n.message }}</span>
-          <button (click)="ui.dismiss(n.id)" aria-label="Dismiss" type="button">
+          <button (click)="ui.dismiss(n.id)" aria-label="Dismiss" tooltip="Dismiss" tooltipPos="top" type="button">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             </svg>

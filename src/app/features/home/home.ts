@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 import { EventsService } from '@core/services/events.service';
 import { PeopleService } from '@core/services/people.service';
 import { SettingsService } from '@core/services/settings.service';
-import { UiStateService } from '@core/services/ui-state.service';
 import {
   daysUntil, nextOccurrence, turningAge, yearsOnNextOccurrence,
   isMilestoneYear, milestoneLabel, onThisDayFilter,
@@ -22,7 +21,6 @@ export class Home {
   private readonly eventsService = inject(EventsService);
   private readonly people        = inject(PeopleService);
   private readonly settings      = inject(SettingsService);
-  protected readonly ui          = inject(UiStateService);
 
   protected readonly today = new Date();
 

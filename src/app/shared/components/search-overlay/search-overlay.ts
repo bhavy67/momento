@@ -3,6 +3,7 @@ import {
   ElementRef, inject, output, signal, viewChild, effect,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { TooltipDirective } from '@shared/directives/tooltip.directive';
 import { SearchService } from '@core/services/search.service';
 import type { Person, MomentoEvent, Memory, Gift } from '@types';
 
@@ -17,7 +18,7 @@ interface FlatResult {
 @Component({
   selector: 'app-search-overlay',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink, TooltipDirective],
   templateUrl: './search-overlay.html',
   styleUrl: './search-overlay.css',
   host: {

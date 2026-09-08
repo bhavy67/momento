@@ -159,6 +159,65 @@
 
 .sidebar-add-btn:hover { opacity: 0.88; }
 
+/* ─── Mobile top bar ───────────────────────────────────────────────────────── */
+
+.mobile-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  height: 52px;
+  background: color-mix(in srgb, var(--color-surface) 85%, transparent);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+@media (min-width: 768px) {
+  .mobile-topbar { display: none; }
+}
+
+.mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.mobile-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.mobile-brand-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  padding-top: 1px;
+}
+
+.mobile-search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.mobile-search-btn:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+}
+
 /* ─── Main content ─────────────────────────────────────────────────────────── */
 
 .content {
