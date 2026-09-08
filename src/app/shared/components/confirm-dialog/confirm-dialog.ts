@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { A11yModule } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-confirm-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [A11yModule],
   templateUrl: './confirm-dialog.html',
   styleUrl: './confirm-dialog.css',
 })
