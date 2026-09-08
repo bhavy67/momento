@@ -49,9 +49,9 @@ export function getPastOccurrences(
   }
 
   if (recurrenceType === 'yearly') {
-    for (let year = event.date.year; year < upTo.getFullYear(); year++) {
+    for (let year = event.date.year; year <= upTo.getFullYear(); year++) {
       const occurrence = localDateToDate(event.date, year);
-      if (occurrence < upTo) results.push(occurrence);
+      if (occurrence <= upTo) results.push(occurrence);
     }
   }
 
