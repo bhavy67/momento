@@ -25,20 +25,6 @@
       <a routerLink="/people/new" class="btn-primary">Add your first person</a>
     </div>
 
-  } @else if (!hasPastEvents()) {
-    <!-- Has events, but none are past yet -->
-    <div class="empty-state">
-      <div class="empty-mark" aria-hidden="true">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="26" r="16" stroke="var(--color-border)" stroke-width="2"/>
-          <path d="M24 18v9l5 3" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-          <path d="M17 10 24 6l7 4" stroke="var(--color-border)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <p class="empty-title">Nothing in the past yet</p>
-      <p class="empty-body">Your upcoming events will appear here once they pass. Come back after your first event.</p>
-    </div>
-
   } @else {
 
     <!-- Timeline -->
@@ -57,7 +43,7 @@
 
                 <ul class="entry-list" role="list">
                   @for (entry of monthGroup.entries; track entryKey(entry)) {
-                    <li class="entry-item">
+                    <li class="entry-item" [class.entry-upcoming]="!entry.isPast">
                       <a [routerLink]="['/events', entry.event.id]" class="entry-link">
 
                         <!-- Day column -->
@@ -76,6 +62,9 @@
                               <span class="meta-person">{{ entry.person.name }}</span>
                             }
                             <span class="meta-type">{{ typeLabel(entry.event.type) }}</span>
+                            @if (!entry.isPast) {
+                              <span class="meta-upcoming">upcoming</span>
+                            }
                             @if (entry.hasMemory) {
                               <span class="meta-memory" title="Memory recorded">✨</span>
                             }

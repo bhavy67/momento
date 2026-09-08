@@ -265,6 +265,41 @@
   line-height: 1;
 }
 
+.meta-upcoming {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Upcoming entries — visually distinct from past */
+.entry-item.entry-upcoming .day-num {
+  color: var(--color-accent);
+  opacity: 0.8;
+}
+
+.entry-item.entry-upcoming .entry-dot {
+  background: transparent;
+  border-color: var(--color-accent);
+  opacity: 0.6;
+}
+
+.entry-item.entry-upcoming .entry-title {
+  color: var(--color-text-muted);
+}
+
+.entry-item.entry-upcoming .entry-link:hover .entry-title {
+  color: var(--color-accent);
+}
+
+.entry-item.entry-upcoming .entry-link:hover .entry-dot {
+  opacity: 1;
+}
+
 @media (min-width: 640px) {
   .page { padding: 2rem 1.5rem 4rem; }
 }

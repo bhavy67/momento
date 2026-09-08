@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { EventsService } from '@core/services/events.service';
 import { PeopleService } from '@core/services/people.service';
 import { MemoriesService } from '@core/services/memories.service';
-import { getPastOccurrences } from '@utils/recurrence';
+import { getAllTimelineOccurrences } from '@utils/recurrence';
 import type { MomentoEvent, Person } from '@types';
 
 interface TimelineEntry {
@@ -11,6 +11,7 @@ interface TimelineEntry {
   person?:   Person;
   date:      Date;
   hasMemory: boolean;
+  isPast:    boolean;
 }
 
 interface TimelineMonth {
@@ -52,20 +53,21 @@ export class Timeline {
     const entries: TimelineEntry[] = [];
 
     for (const event of allEvents) {
-      const pastDates = getPastOccurrences(event, today);
-      if (!pastDates.length) continue;
+      const dates = getAllTimelineOccurrences(event, today);
+      if (!dates.length) continue;
 
       const person = event.personId
         ? allPeople.find(p => p.id === event.personId)
         : undefined;
 
-      for (const date of pastDates) {
+      for (const date of dates) {
+        const isPast    = date <= today;
         const yearStart = new Date(date.getFullYear(), 0, 1).getTime();
         const yearEnd   = new Date(date.getFullYear(), 11, 31, 23, 59, 59, 999).getTime();
-        const hasMemory = allMem.some(
+        const hasMemory = isPast && allMem.some(
           m => m.eventId === event.id && m.date >= yearStart && m.date <= yearEnd
         );
-        entries.push({ event, person, date, hasMemory });
+        entries.push({ event, person, date, hasMemory, isPast });
       }
     }
 
