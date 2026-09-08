@@ -10,6 +10,11 @@ export type GiftInput = Omit<Gift, 'id' | 'createdAt' | 'updatedAt'>;
 
 @Injectable({ providedIn: 'root' })
 export class GiftsService {
+  readonly all = toSignal(
+    from(liveQuery(() => db.gifts.toArray())),
+    { initialValue: [] as Gift[] }
+  );
+
   forPerson(personId: string) {
     return toSignal(
       from(liveQuery(() =>
