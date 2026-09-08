@@ -18,7 +18,7 @@ export class GiftsService {
   forPerson(personId: string) {
     return toSignal(
       from(liveQuery(() =>
-        db.gifts.where('personId').equals(personId).reverse().sortBy('year')
+        db.gifts.where('personId').equals(personId).sortBy('year').then(arr => arr.reverse())
       )),
       { initialValue: [] as Gift[] }
     );

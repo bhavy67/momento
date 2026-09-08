@@ -31,12 +31,13 @@ export function getNextOccurrences(
 }
 
 /**
- * Get all past occurrences of a recurring event, from the event's origin year
- * up to (but not including) the current year. Used for the Timeline view.
+ * Get past occurrences of a recurring event up to `upTo`.
+ * Yearly events are capped at the last 10 years to keep the timeline manageable.
  */
 export function getPastOccurrences(
   event: MomentoEvent,
-  upTo: Date = new Date()
+  upTo: Date = new Date(),
+  maxYears = 10
 ): Date[] {
   if (!event.date.year) return [];
 
@@ -49,8 +50,10 @@ export function getPastOccurrences(
   }
 
   if (recurrenceType === 'yearly') {
-    for (let year = event.date.year; year <= upTo.getFullYear(); year++) {
-      const occurrence = localDateToDate(event.date, year);
+    const startYear = Math.max(event.date.year, upTo.getFullYear() - maxYears + 1);
+    for (let year = startYear; year <= upTo.getFullYear(); year++) {
+      // Override year so localDateToDate uses the iteration year, not the origin year.
+      const occurrence = localDateToDate({ ...event.date, year });
       if (occurrence <= upTo) results.push(occurrence);
     }
   }

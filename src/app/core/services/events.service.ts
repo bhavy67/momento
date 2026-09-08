@@ -13,7 +13,7 @@ export class EventsService {
   /** All non-archived events ordered by createdAt desc */
   readonly all = toSignal(
     from(liveQuery(() =>
-      db.events.filter(e => !e.isArchived).reverse().sortBy('createdAt')
+      db.events.orderBy('createdAt').reverse().filter(e => !e.isArchived).toArray()
     )),
     { initialValue: [] as MomentoEvent[] }
   );

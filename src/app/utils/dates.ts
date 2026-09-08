@@ -33,10 +33,12 @@ export function nextOccurrence(
   const fromDay = startOfDay(from);
 
   if (recurrenceType === 'yearly') {
-    // Try this calendar year first
-    let candidate = localDateToDate(date, fromDay.getFullYear());
+    // Override ld.year so localDateToDate uses the current/next calendar year,
+    // not the event's origin year (which ld.year would otherwise lock in).
+    const thisYear = fromDay.getFullYear();
+    let candidate = localDateToDate({ ...date, year: thisYear });
     if (startOfDay(candidate) < fromDay) {
-      candidate = localDateToDate(date, fromDay.getFullYear() + 1);
+      candidate = localDateToDate({ ...date, year: thisYear + 1 });
     }
     return candidate;
   }

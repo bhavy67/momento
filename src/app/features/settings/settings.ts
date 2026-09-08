@@ -57,6 +57,7 @@ export class Settings {
   protected readonly clearText        = signal('');
   protected readonly clearing         = signal(false);
 
+
   protected readonly themeOptions: { value: Theme; label: string }[] = [
     { value: 'light',  label: 'Light'  },
     { value: 'system', label: 'System' },
@@ -194,4 +195,5 @@ export class Settings {
       this.clearing.set(false);
     }
   }
+
 }

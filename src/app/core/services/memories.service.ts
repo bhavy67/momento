@@ -13,7 +13,7 @@ export class MemoriesService {
   forPerson(personId: string) {
     return toSignal(
       from(liveQuery(() =>
-        db.memories.where('personIds').equals(personId).reverse().sortBy('date')
+        db.memories.where('personIds').equals(personId).sortBy('date').then(arr => arr.reverse())
       )),
       { initialValue: [] as Memory[] }
     );
@@ -22,7 +22,7 @@ export class MemoriesService {
   forEvent(eventId: string) {
     return toSignal(
       from(liveQuery(() =>
-        db.memories.where('eventId').equals(eventId).reverse().sortBy('date')
+        db.memories.where('eventId').equals(eventId).sortBy('date').then(arr => arr.reverse())
       )),
       { initialValue: [] as Memory[] }
     );
