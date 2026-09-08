@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
-  <title>Momento</title>
-  <path d="M 67 20.56 A 34 34 0 1 1 33 20.56"
-        stroke="#1C1C1A" stroke-width="7" stroke-linecap="round"/>
-  <circle cx="50" cy="16" r="6.5" fill="#C96A2E"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="22" fill="#C96A2E"/>
+  <path d="M 68 23 A 33 33 0 1 1 32 23"
+        stroke="white" stroke-width="10" stroke-linecap="round" fill="none"/>
+  <circle cx="50" cy="16" r="7.5" fill="white"/>
 </svg>
