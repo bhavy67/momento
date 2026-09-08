@@ -1,0 +1,378 @@
+.settings {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Page header ────────────────────────────────────────────── */
+
+.page-header { margin-bottom: 0.25rem; }
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--color-text-primary);
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+/* ── Card ───────────────────────────────────────────────────── */
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card--danger {
+  border-color: color-mix(in srgb, var(--color-danger, #e74c3c) 25%, transparent);
+}
+
+.card-heading {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-faint);
+  margin: 0 0 0.25rem;
+}
+
+.card-heading--danger { color: var(--color-danger, #e74c3c); }
+
+/* ── Pref rows ──────────────────────────────────────────────── */
+
+.pref-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.25rem 0;
+}
+
+.pref-row + .pref-row {
+  border-top: 1px solid var(--color-border);
+  padding-top: 0.875rem;
+}
+
+.pref-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pref-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.pref-hint {
+  font-size: 0.78rem;
+  color: var(--color-text-faint);
+  line-height: 1.4;
+}
+
+/* ── Segmented control ──────────────────────────────────────── */
+
+.seg-control {
+  display: flex;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.seg-btn {
+  padding: 0.35rem 0.75rem;
+  border-radius: calc(var(--radius-md) - 2px);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.seg-btn.active {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.seg-btn:not(.active):hover {
+  color: var(--color-text-primary);
+}
+
+/* ── Select ─────────────────────────────────────────────────── */
+
+.pref-select {
+  flex-shrink: 0;
+  appearance: none;
+  background: var(--color-surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.4rem 2.25rem 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  min-width: 140px;
+}
+
+.pref-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* ── Counts row ─────────────────────────────────────────────── */
+
+.counts-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.count-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0.75rem 0.5rem;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.count-num {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-style: italic;
+  line-height: 1;
+}
+
+.count-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-text-faint);
+}
+
+/* ── Data actions ───────────────────────────────────────────── */
+
+.data-actions {
+  display: flex;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.hidden-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.125rem;
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-secondary:hover { background: var(--color-border); }
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.btn-ghost:hover { background: var(--color-surface-2); }
+
+/* ── Import result / error ──────────────────────────────────── */
+
+.import-result,
+.import-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-md);
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.import-result {
+  background: color-mix(in srgb, var(--color-success, #2ecc71) 12%, transparent);
+  color: var(--color-success, #2ecc71);
+  border: 1px solid color-mix(in srgb, var(--color-success, #2ecc71) 25%, transparent);
+}
+
+.import-error {
+  background: color-mix(in srgb, var(--color-danger, #e74c3c) 10%, transparent);
+  color: var(--color-danger, #e74c3c);
+  border: 1px solid color-mix(in srgb, var(--color-danger, #e74c3c) 25%, transparent);
+}
+
+/* ── Danger zone ────────────────────────────────────────────── */
+
+.danger-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.danger-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 3px;
+}
+
+.danger-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-faint);
+  margin: 0;
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+.btn-danger-outline {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--color-danger, #e74c3c);
+  border: 1px solid color-mix(in srgb, var(--color-danger, #e74c3c) 40%, transparent);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-danger-outline:hover {
+  background: color-mix(in srgb, var(--color-danger, #e74c3c) 8%, transparent);
+  border-color: var(--color-danger, #e74c3c);
+}
+
+/* ── Clear confirm ──────────────────────────────────────────── */
+
+.clear-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.clear-warning {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.clear-input {
+  padding: 0.55rem 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.clear-input:focus {
+  outline: none;
+  border-color: var(--color-danger, #e74c3c);
+}
+
+.clear-actions {
+  display: flex;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1.125rem;
+  background: var(--color-danger, #e74c3c);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+
+.btn-danger:hover:not(:disabled) { opacity: 0.88; }
+
+.btn-danger:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Version line ───────────────────────────────────────────── */
+
+.version-line {
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
+  text-align: center;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+
+@media (min-width: 640px) {
+  .settings { padding: 2rem 1.5rem 4rem; }
+}
+
+@media (max-width: 480px) {
+  .counts-row { grid-template-columns: repeat(2, 1fr); }
+  .danger-row { flex-direction: column; }
+}

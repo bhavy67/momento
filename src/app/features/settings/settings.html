@@ -1,0 +1,155 @@
+<div class="settings">
+  <header class="page-header">
+    <h1 class="page-title">Settings</h1>
+  </header>
+
+  <!-- ── Preferences ──────────────────────────────────────────── -->
+  <section class="card" aria-labelledby="pref-heading">
+    <h2 id="pref-heading" class="card-heading">Preferences</h2>
+
+    <div class="pref-row">
+      <div class="pref-label">
+        <span class="pref-name">Theme</span>
+      </div>
+      <div class="seg-control" role="group" aria-label="Theme">
+        @for (opt of themeOptions; track opt.value) {
+          <button
+            type="button"
+            class="seg-btn"
+            [class.active]="s().theme === opt.value"
+            (click)="setTheme(opt.value)"
+          >{{ opt.label }}</button>
+        }
+      </div>
+    </div>
+
+    <div class="pref-row">
+      <label class="pref-label" for="window-select">
+        <span class="pref-name">Upcoming window</span>
+        <span class="pref-hint">How far ahead to show events on the home screen</span>
+      </label>
+      <select id="window-select" class="pref-select" [value]="s().upcomingWindowDays" (change)="setWindow($event)">
+        <option value="14">14 days</option>
+        <option value="30">30 days</option>
+        <option value="60">60 days</option>
+        <option value="90">90 days</option>
+        <option value="180">180 days</option>
+      </select>
+    </div>
+
+    <div class="pref-row">
+      <label class="pref-label" for="date-format-select">
+        <span class="pref-name">Date format</span>
+      </label>
+      <select id="date-format-select" class="pref-select" [value]="s().dateFormat" (change)="setDateFormat($event)">
+        <option value="dmy">DD / MM / YYYY</option>
+        <option value="mdy">MM / DD / YYYY</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- ── Your data ────────────────────────────────────────────── -->
+  <section class="card" aria-labelledby="data-heading">
+    <h2 id="data-heading" class="card-heading">Your data</h2>
+
+    <div class="counts-row">
+      @for (item of countItems(); track item.label) {
+        <div class="count-cell">
+          <span class="count-num">{{ item.count }}</span>
+          <span class="count-label">{{ item.label }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="data-actions">
+      <button type="button" class="btn-secondary" (click)="exportData()">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 15h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Export backup
+      </button>
+
+      <button type="button" class="btn-secondary" (click)="triggerImport()" [disabled]="importing()">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M10 13V3M6 7l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 15h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        {{ importing() ? 'Importing…' : 'Import backup' }}
+      </button>
+
+      <input #fileInput type="file" accept=".json" class="hidden-input" (change)="onFileChange($event)" />
+    </div>
+
+    @if (importResult()) {
+      <div class="import-result" role="status">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="10" cy="10" r="8" stroke="var(--color-success)" stroke-width="1.6"/>
+          <path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="var(--color-success)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Import complete —
+        {{ importResult()!.people }} people,
+        {{ importResult()!.events }} events,
+        {{ importResult()!.memories }} memories,
+        {{ importResult()!.gifts }} gifts
+      </div>
+    }
+
+    @if (importError()) {
+      <div class="import-error" role="alert">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M10 6v4M10 13.5v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        {{ importError() }}
+      </div>
+    }
+  </section>
+
+  <!-- ── Danger zone ───────────────────────────────────────────── -->
+  <section class="card card--danger" aria-labelledby="danger-heading">
+    <h2 id="danger-heading" class="card-heading card-heading--danger">Danger zone</h2>
+
+    @if (!showClearConfirm()) {
+      <div class="danger-row">
+        <div>
+          <p class="danger-name">Clear all data</p>
+          <p class="danger-hint">Permanently delete every person, event, memory, and gift. This cannot be undone.</p>
+        </div>
+        <button type="button" class="btn-danger-outline" (click)="showClearConfirm.set(true)">
+          Clear all data
+        </button>
+      </div>
+    } @else {
+      <div class="clear-confirm">
+        <p class="clear-warning">
+          This will permanently delete all {{ counts().people + counts().events + counts().memories + counts().gifts }} records. Type <strong>DELETE</strong> to confirm.
+        </p>
+        <input
+          type="text"
+          class="clear-input"
+          placeholder="Type DELETE to confirm"
+          [ngModel]="clearText()"
+          (ngModelChange)="clearText.set($event)"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <div class="clear-actions">
+          <button
+            type="button"
+            class="btn-danger"
+            [disabled]="!canClear || clearing()"
+            (click)="clearAllData()"
+          >
+            {{ clearing() ? 'Clearing…' : 'Yes, delete everything' }}
+          </button>
+          <button type="button" class="btn-ghost" (click)="showClearConfirm.set(false); clearText.set('')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    }
+  </section>
+
+  <p class="version-line">Momento · local-first · all data stays on your device</p>
+</div>
