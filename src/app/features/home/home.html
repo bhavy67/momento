@@ -44,7 +44,7 @@
         <ul class="today-list" role="list">
           @for (u of todayEvents(); track u.event.id) {
             <li>
-              <a [routerLink]="['/events', u.event.id]" class="today-card">
+              <a [routerLink]="['/events', u.event.id]" class="today-card" [attr.data-type]="u.event.type">
                 <div class="today-card-icon">{{ typeIcon(u.event.type) }}</div>
                 <div class="today-card-body">
                   <span class="today-card-title">{{ u.event.title }}</span>
@@ -80,7 +80,7 @@
       } @else {
         <ul class="event-list" role="list">
           @for (u of soonEvents(); track u.event.id) {
-            <li class="event-row" [class.milestone]="u.isMilestone">
+            <li class="event-row" [class.milestone]="u.isMilestone" [attr.data-type]="u.event.type">
               <a [routerLink]="['/events', u.event.id]" class="event-row-link">
                 <span class="event-icon" aria-hidden="true">{{ typeIcon(u.event.type) }}</span>
                 <div class="event-info">
@@ -90,7 +90,7 @@
                   }
                 </div>
                 <div class="event-right">
-                  <span class="countdown-pill" [class.soon]="u.daysUntil <= 7">
+                  <span class="countdown-pill" [class.urgent]="u.daysUntil <= 3" [class.soon]="u.daysUntil > 3 && u.daysUntil <= 7">
                     {{ formatCountdown(u.daysUntil) }}
                   </span>
                   @if (u.isMilestone) {

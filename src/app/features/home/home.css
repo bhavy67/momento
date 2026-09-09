@@ -168,8 +168,15 @@
   padding: 1rem 1.125rem;
   background: var(--color-accent-bg);
   border: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+  border-left: 4px solid var(--color-accent);
   border-radius: var(--radius-lg);
   transition: opacity 0.15s;
+}
+
+.today-card[data-type] {
+  background: var(--type-bg);
+  border-color: color-mix(in srgb, var(--type-color) 20%, transparent);
+  border-left-color: var(--type-color);
 }
 
 .today-card:hover { opacity: 0.88; }
@@ -244,11 +251,16 @@
 .event-row-link:hover { background: var(--color-surface-2); }
 
 .event-icon {
-  font-size: 1.1rem;
-  width: 1.5rem;
-  text-align: center;
+  font-size: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   line-height: 1;
+  border-radius: var(--radius-sm);
+  background: var(--type-bg, var(--color-surface-2));
 }
 
 .event-info {
@@ -298,6 +310,12 @@
 .countdown-pill.soon {
   background: var(--color-accent-bg);
   color: var(--color-accent);
+}
+
+.countdown-pill.urgent {
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+  color: var(--color-danger);
+  font-weight: 800;
 }
 
 .milestone-star,

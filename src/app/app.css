@@ -307,7 +307,7 @@
 
 .toast-stack {
   position: fixed;
-  bottom: 1.5rem;
+  top: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -321,7 +321,7 @@
 
 @media (min-width: 768px) {
   .toast-stack {
-    bottom: 1.5rem;
+    top: 1.5rem;
     right: 1.5rem;
     left: auto;
     transform: none;

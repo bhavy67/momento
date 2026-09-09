@@ -43,7 +43,7 @@
 
                 <ul class="entry-list" role="list">
                   @for (entry of monthGroup.entries; track entryKey(entry)) {
-                    <li class="entry-item" [class.entry-upcoming]="!entry.isPast">
+                    <li class="entry-item" [class.entry-upcoming]="!entry.isPast" [attr.data-type]="entry.event.type">
                       <a [routerLink]="['/events', entry.event.id]" class="entry-link">
 
                         <!-- Day column -->
@@ -61,7 +61,7 @@
                             @if (entry.person) {
                               <span class="meta-person">{{ entry.person.name }}</span>
                             }
-                            <span class="meta-type">{{ typeLabel(entry.event.type) }}</span>
+                            <span class="meta-type" [attr.data-type]="entry.event.type">{{ typeLabel(entry.event.type) }}</span>
                             @if (!entry.isPast) {
                               <span class="meta-upcoming">upcoming</span>
                             }

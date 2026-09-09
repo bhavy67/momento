@@ -137,6 +137,21 @@ html {
   outline: none;
 }
 
+/* ─── Relationship colour palette ───────────────────────────────────────── */
+/* Sets --rel-color / --rel-bg on any [data-rel] element; children inherit.  */
+/* color-mix ties both values to surface + text tokens → dark mode is free.  */
+[data-rel="family"]    { --rel-color: color-mix(in srgb, #F59E0B 72%, var(--color-text-primary)); --rel-bg: color-mix(in srgb, #F59E0B 13%, var(--color-surface)); }
+[data-rel="friend"]    { --rel-color: color-mix(in srgb, #10B981 72%, var(--color-text-primary)); --rel-bg: color-mix(in srgb, #10B981 13%, var(--color-surface)); }
+[data-rel="partner"]   { --rel-color: color-mix(in srgb, #EC4899 72%, var(--color-text-primary)); --rel-bg: color-mix(in srgb, #EC4899 13%, var(--color-surface)); }
+[data-rel="colleague"] { --rel-color: color-mix(in srgb, #3B82F6 72%, var(--color-text-primary)); --rel-bg: color-mix(in srgb, #3B82F6 13%, var(--color-surface)); }
+[data-rel="other"]     { --rel-color: color-mix(in srgb, #8B5CF6 72%, var(--color-text-primary)); --rel-bg: color-mix(in srgb, #8B5CF6 13%, var(--color-surface)); }
+
+/* ─── Event type colour palette ──────────────────────────────────────────── */
+[data-type="birthday"]    { --type-color: color-mix(in srgb, #EF4444 72%, var(--color-text-primary)); --type-bg: color-mix(in srgb, #EF4444 13%, var(--color-surface)); }
+[data-type="anniversary"] { --type-color: color-mix(in srgb, #EC4899 72%, var(--color-text-primary)); --type-bg: color-mix(in srgb, #EC4899 13%, var(--color-surface)); }
+[data-type="milestone"]   { --type-color: color-mix(in srgb, #F59E0B 72%, var(--color-text-primary)); --type-bg: color-mix(in srgb, #F59E0B 13%, var(--color-surface)); }
+[data-type="custom"]      { --type-color: color-mix(in srgb, #6366F1 72%, var(--color-text-primary)); --type-bg: color-mix(in srgb, #6366F1 13%, var(--color-surface)); }
+
 /* ─── Tooltip ────────────────────────────────────────────────────────────── */
 
 .app-tooltip {

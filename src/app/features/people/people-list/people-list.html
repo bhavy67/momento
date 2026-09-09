@@ -47,7 +47,7 @@
   } @else {
     <ul class="person-list" role="list">
       @for (person of filtered(); track person.id) {
-        <li class="person-card">
+        <li class="person-card" [attr.data-rel]="person.relationship">
           <a [routerLink]="['/people', person.id]" class="person-card-link">
             <div class="person-avatar" [attr.data-rel]="person.relationship">
               {{ person.name.charAt(0).toUpperCase() }}
