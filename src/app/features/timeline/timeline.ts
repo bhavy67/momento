@@ -32,6 +32,12 @@ const MONTH_NAMES = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
+interface ArchivedEntry {
+  event:   MomentoEvent;
+  person?: Person;
+  dateLabel: string;
+}
+
 @Component({
   selector: 'app-timeline',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,12 +45,6 @@ const MONTH_NAMES = [
   templateUrl: './timeline.html',
   styleUrl: './timeline.css',
 })
-interface ArchivedEntry {
-  event:   MomentoEvent;
-  person?: Person;
-  dateLabel: string;
-}
-
 export class Timeline {
   private readonly events   = inject(EventsService);
   private readonly people   = inject(PeopleService);
