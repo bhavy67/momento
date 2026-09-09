@@ -60,6 +60,9 @@
                   <span class="birthday-text">{{ formatBirthday(person) }}</span>
                 }
               </span>
+              @if (nextEvent(person.id); as hint) {
+                <span class="next-event-hint">{{ hint }}</span>
+              }
             </div>
           </a>
           <div class="person-actions">

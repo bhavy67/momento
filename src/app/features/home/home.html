@@ -69,7 +69,10 @@
     <section class="section" aria-labelledby="upcoming-heading">
       <div class="section-header-row">
         <h2 id="upcoming-heading" class="section-heading">Coming up</h2>
-        <span class="section-meta">next {{ windowDays() }} days</span>
+        <div class="section-header-right">
+          <span class="section-meta">next {{ windowDays() }} days</span>
+          <a routerLink="/events" class="section-see-all">All events →</a>
+        </div>
       </div>
 
       @if (soonEvents().length === 0) {

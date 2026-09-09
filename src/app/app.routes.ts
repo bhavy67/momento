@@ -37,6 +37,12 @@ export const routes: Routes = [
     title: 'Edit person · Momento',
   },
   {
+    path: 'events',
+    loadComponent: () =>
+      import('@features/events/event-list/event-list').then(m => m.EventList),
+    title: 'Events · Momento',
+  },
+  {
     path: 'events/new',
     loadComponent: () =>
       import('@features/events/event-form/event-form').then(m => m.EventForm),

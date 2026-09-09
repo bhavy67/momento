@@ -71,6 +71,25 @@
   outline-offset: 1px;
 }
 
+.field-select {
+  width: 100%;
+  padding: 0.55rem 2.25rem 0.55rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+  appearance: none;
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.field-select:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
 .field-input.invalid { border-color: var(--color-danger); }
 .field-error { font-size: 0.78rem; color: var(--color-danger); }
 .field-textarea { resize: vertical; min-height: 80px; font-family: inherit; }

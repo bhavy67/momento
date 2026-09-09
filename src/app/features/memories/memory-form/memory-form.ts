@@ -36,6 +36,13 @@ export class MemoryForm {
   protected readonly selectedPersonIds = signal<string[]>([]);
   protected readonly allPeople         = computed(() => this.people.all());
 
+  protected readonly eventsForPicker = computed(() => {
+    const ids = this.selectedPersonIds();
+    const all = this.eventsService.all();
+    if (!ids.length) return all;
+    return all.filter(e => ids.some(pid => (e.personIds ?? []).includes(pid)));
+  });
+
   protected readonly todayStr = new Date().toISOString().slice(0, 10);
 
   protected readonly form = this.fb.nonNullable.group({

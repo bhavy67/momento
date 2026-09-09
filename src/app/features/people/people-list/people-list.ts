@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PeopleService } from '@core/services/people.service';
+import { EventsService } from '@core/services/events.service';
 import { UiStateService } from '@core/services/ui-state.service';
 import { ConfirmDialog } from '@shared/components/confirm-dialog/confirm-dialog';
 import { TooltipDirective } from '@shared/directives/tooltip.directive';
-import { formatLocalDate } from '@utils/dates';
+import { formatLocalDate, nextOccurrence, daysUntil, formatCountdown } from '@utils/dates';
 import type { Person, Relationship } from '@types';
 
 const RELATIONSHIPS: { value: Relationship | null; label: string }[] = [
@@ -24,8 +25,9 @@ const RELATIONSHIPS: { value: Relationship | null; label: string }[] = [
   styleUrl: './people-list.css',
 })
 export class PeopleList {
-  private readonly people = inject(PeopleService);
-  private readonly ui     = inject(UiStateService);
+  private readonly people        = inject(PeopleService);
+  private readonly eventsService = inject(EventsService);
+  private readonly ui            = inject(UiStateService);
 
   protected readonly RELATIONSHIPS = RELATIONSHIPS;
   protected readonly search      = signal('');
@@ -41,6 +43,25 @@ export class PeopleList {
       .filter(p => !q   || p.name.toLowerCase().includes(q))
       .filter(p => !rel || p.relationship === rel);
   });
+
+  protected readonly nextEventMap = computed((): Map<string, string> => {
+    const sorted = this.eventsService.all()
+      .map(e => ({ e, days: daysUntil(nextOccurrence(e.date, e.recurrence.type)) }))
+      .sort((a, b) => a.days - b.days);
+    const map = new Map<string, string>();
+    for (const { e, days } of sorted) {
+      for (const pid of (e.personIds ?? [])) {
+        if (!map.has(pid)) {
+          map.set(pid, `${e.title} · ${formatCountdown(days)}`);
+        }
+      }
+    }
+    return map;
+  });
+
+  protected nextEvent(personId: string): string | null {
+    return this.nextEventMap().get(personId) ?? null;
+  }
 
   protected formatBirthday(p: Person): string {
     return p.birthday ? formatLocalDate(p.birthday, 'short') : '—';

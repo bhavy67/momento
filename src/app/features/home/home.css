@@ -127,8 +127,23 @@
 .section-header-row {
   display: flex;
   align-items: baseline;
+  justify-content: space-between;
   gap: 0.625rem;
   margin-bottom: 0.75rem;
+}
+
+.section-header-right {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.section-see-all {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .section-heading {

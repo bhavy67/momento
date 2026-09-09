@@ -170,6 +170,15 @@
   color: var(--color-text-faint);
 }
 
+.next-event-hint {
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Actions */
 .person-actions {
   display: flex;

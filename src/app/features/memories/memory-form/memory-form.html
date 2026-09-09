@@ -49,6 +49,19 @@
         [max]="todayStr" />
     </div>
 
+    <!-- Linked event -->
+    @if (eventsForPicker().length > 0) {
+      <div class="field">
+        <label for="eventId" class="field-label">Linked event <span class="optional">(optional)</span></label>
+        <select id="eventId" formControlName="eventId" class="field-select">
+          <option value="">No specific event</option>
+          @for (e of eventsForPicker(); track e.id) {
+            <option [value]="e.id">{{ e.title }}</option>
+          }
+        </select>
+      </div>
+    }
+
     <!-- People -->
     @if (allPeople().length > 0) {
       <div class="field">

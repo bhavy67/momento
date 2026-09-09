@@ -1,0 +1,69 @@
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Events</h1>
+      <span class="page-subtitle">{{ filteredCount() }} of {{ totalCount() }}</span>
+    </div>
+    <a routerLink="/events/new" class="btn-primary">+ Add</a>
+  </div>
+
+  <!-- Type filter -->
+  <div class="filter-row" role="group" aria-label="Filter by type">
+    @for (f of TYPE_FILTERS; track f.label) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="filterType() === f.value"
+        [attr.data-type]="f.value"
+        (click)="filterType.set(f.value)">
+        {{ f.label }}
+      </button>
+    }
+  </div>
+
+  <!-- List -->
+  @if (rows().length === 0) {
+    <div class="empty-state">
+      <p class="empty-title">No events yet</p>
+      <p class="empty-sub">Add birthdays, anniversaries, and milestones to start tracking what matters.</p>
+      <a routerLink="/events/new" class="link-accent">Add your first event →</a>
+    </div>
+  } @else {
+    <ul class="event-list" role="list">
+      @for (row of rows(); track row.event.id) {
+        <li class="event-row" [attr.data-type]="row.event.type">
+          <a [routerLink]="['/events', row.event.id]" class="event-link">
+
+            <div class="event-icon" aria-hidden="true">{{ typeIcon(row.event.type) }}</div>
+
+            <div class="event-body">
+              <span class="event-title">{{ row.event.title }}</span>
+              <div class="event-meta">
+                <span class="event-date">{{ row.dateLabel }}</span>
+                @if (row.linkedPeople.length) {
+                  <span class="event-sep" aria-hidden="true">·</span>
+                  <span class="event-people">
+                    @for (p of row.linkedPeople; track p.id; let last = $last) {
+                      {{ p.name }}@if (!last) {, }
+                    }
+                  </span>
+                }
+              </div>
+            </div>
+
+            <span
+              class="countdown-pill"
+              [class.today]="row.days === 0"
+              [class.urgent]="row.days > 0 && row.days <= 3"
+              [class.soon]="row.days > 3 && row.days <= 7">
+              {{ formatCountdown(row.days) }}
+            </span>
+
+          </a>
+        </li>
+      }
+    </ul>
+  }
+
+</div>
