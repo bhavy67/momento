@@ -36,10 +36,12 @@
     </div>
 
     <!-- Birthday -->
-    <div class="field">
-      <label class="field-label">Birthday <span class="optional">(optional)</span></label>
-      <app-date-input [(value)]="birthday" [yearOptional]="true" />
-    </div>
+    @if (isEdit()) {
+      <div class="field">
+        <label class="field-label">Birthday <span class="optional">(optional)</span></label>
+        <app-date-input [(value)]="birthday" [yearOptional]="true" />
+      </div>
+    }
 
     <!-- Notes -->
     <div class="field">

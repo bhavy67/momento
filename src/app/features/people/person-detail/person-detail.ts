@@ -48,7 +48,7 @@ export class PersonDetail {
 
   protected readonly personEvents = computed(() =>
     this.events.all()
-      .filter(e => e.personId === this.id() && !e.isArchived)
+      .filter(e => (e.personIds ?? []).includes(this.id()) && !e.isArchived)
       .sort((a, b) => {
         const da = daysUntil(nextOccurrence(a.date, a.recurrence.type));
         const db = daysUntil(nextOccurrence(b.date, b.recurrence.type));
@@ -82,6 +82,9 @@ export class PersonDetail {
   });
 
   protected readonly eventsCount   = computed(() => this.personEvents().length);
+  protected readonly hasBirthdayEvent = computed(() =>
+    this.personEvents().some(e => e.type === 'birthday')
+  );
   protected readonly giftsCount    = computed(() =>
     this.gifts.all().filter(g => g.personId === this.id()).length
   );

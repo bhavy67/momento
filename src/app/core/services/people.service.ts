@@ -55,7 +55,11 @@ export class PeopleService {
         }
       }
 
-      await db.events.where('personId').equals(id).delete();
+      const sharedEvents = await db.events.where('personIds').equals(id).toArray();
+      for (const event of sharedEvents) {
+        const newPersonIds = event.personIds.filter((pid: string) => pid !== id);
+        await db.events.update(event.id, { personIds: newPersonIds, updatedAt: Date.now() });
+      }
       await db.gifts.where('personId').equals(id).delete();
       await db.people.delete(id);
     });

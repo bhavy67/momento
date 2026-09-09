@@ -48,7 +48,7 @@ export interface MomentoEvent {
   title: string;
   type: EventType;
   date: LocalDate; // year required on events (unlike Person.birthday)
-  personId?: string;
+  personIds: string[];
   description?: string;
   recurrence: RecurrenceRule;
   tags: string[];

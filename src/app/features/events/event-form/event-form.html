@@ -54,15 +54,25 @@
       }
     </div>
 
-    <!-- Person -->
+    <!-- People -->
     <div class="field">
-      <label for="personId" class="field-label">Person <span class="optional">(optional)</span></label>
-      <select id="personId" formControlName="personId" class="field-select">
-        <option value="">— No person linked —</option>
-        @for (p of allPeople(); track p.id) {
-          <option [value]="p.id">{{ p.name }}</option>
-        }
-      </select>
+      <label class="field-label">People <span class="optional">(optional)</span></label>
+      @if (allPeople().length === 0) {
+        <p class="field-hint">No people added yet. <a routerLink="/people/new" class="link-accent">Add a person first →</a></p>
+      } @else {
+        <div class="person-chips">
+          @for (p of allPeople(); track p.id) {
+            <button
+              type="button"
+              class="person-chip"
+              [class.selected]="isPersonSelected(p.id)"
+              (click)="togglePerson(p.id)">
+              <span class="person-chip-avatar">{{ p.name.charAt(0).toUpperCase() }}</span>
+              {{ p.name }}
+            </button>
+          }
+        </div>
+      }
     </div>
 
     <!-- Description -->

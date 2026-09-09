@@ -10,30 +10,31 @@ class MomentoDB extends Dexie {
   constructor() {
     super('momento-db');
 
-    /**
-     * Version 1 schema.
-     * Indexed fields: only those used in queries/sorts — not every field.
-     *
-     * people:   query by name (sort), relationship (filter)
-     * events:   query by personId (person profile), type, isArchived (home screen filter)
-     * memories: query by eventId (event detail), date (timeline sort)
-     * gifts:    query by personId (person profile), year (annual grouping), status (filter)
-     *
-     * Multi-entry index on memories.personIds allows querying by a single personId
-     * even though the field is an array.
-     */
     this.version(1).stores({
       people:   'id, name, relationship, createdAt',
       events:   'id, type, personId, isArchived, createdAt, [personId+type]',
       memories: 'id, eventId, date, createdAt, *personIds',
       gifts:    'id, personId, year, status, createdAt, [personId+year]',
     });
+
+    /**
+     * v2: events.personId (single) → personIds (multi-entry array).
+     * Existing records are migrated: personId → personIds[0].
+     */
+    this.version(2).stores({
+      people:   'id, name, relationship, createdAt',
+      events:   'id, type, *personIds, isArchived, createdAt',
+      memories: 'id, eventId, date, createdAt, *personIds',
+      gifts:    'id, personId, year, status, createdAt, [personId+year]',
+    }).upgrade(tx =>
+      tx.table('events').toCollection().modify((event: any) => {
+        if (!Array.isArray(event.personIds)) {
+          event.personIds = event.personId ? [event.personId] : [];
+        }
+        delete event.personId;
+      })
+    );
   }
 }
 
-/**
- * Singleton Dexie instance — import `db` directly in services.
- * Never instantiate MomentoDB more than once; IndexedDB connections
- * are shared per origin, and Dexie manages the connection lifecycle.
- */
 export const db = new MomentoDB();

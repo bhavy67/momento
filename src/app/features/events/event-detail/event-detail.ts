@@ -37,8 +37,13 @@ export class EventDetail {
   );
 
   protected readonly person = computed(() => {
-    const pid = this.event()?.personId;
-    return pid ? this.people.all().find(p => p.id === pid) : undefined;
+    const ids = this.event()?.personIds ?? [];
+    return ids[0] ? this.people.all().find(p => p.id === ids[0]) : undefined;
+  });
+
+  protected readonly linkedPeople = computed(() => {
+    const ids = this.event()?.personIds ?? [];
+    return ids.map(id => this.people.all().find(p => p.id === id)).filter(Boolean);
   });
 
   protected readonly daysAway = computed(() => {
@@ -73,14 +78,14 @@ export class EventDetail {
 
   protected readonly lastYearContext = computed(() => {
     const e = this.event();
-    if (!e?.personId) return null;
+    if (!e?.personIds?.length) return null;
 
     const prevYear  = new Date().getFullYear() - 1;
     const yearStart = new Date(prevYear, 0, 1).getTime();
     const yearEnd   = new Date(prevYear, 11, 31, 23, 59, 59, 999).getTime();
 
     const personGifts = this.gifts.all()
-      .filter(g => g.personId === e.personId && g.year === prevYear);
+      .filter(g => g.personId === e.personIds[0] && g.year === prevYear);
     const topGift = personGifts.find(g => g.status === 'given')
       ?? personGifts.find(g => g.status === 'purchased')
       ?? personGifts[0];

@@ -4,13 +4,12 @@ import { liveQuery } from 'dexie';
 import { from } from 'rxjs';
 import { db } from '@core/db/database.service';
 import { generateId } from '@utils/id';
-import type { MomentoEvent, EventType, RecurrenceRule } from '@types';
+import type { MomentoEvent, EventType } from '@types';
 
 export type EventInput = Omit<MomentoEvent, 'id' | 'createdAt' | 'updatedAt'>;
 
 @Injectable({ providedIn: 'root' })
 export class EventsService {
-  /** All non-archived events ordered by createdAt desc */
   readonly all = toSignal(
     from(liveQuery(() =>
       db.events.orderBy('createdAt').reverse().filter(e => !e.isArchived).toArray()
@@ -18,11 +17,10 @@ export class EventsService {
     { initialValue: [] as MomentoEvent[] }
   );
 
-  /** Events linked to a specific person */
   forPerson(personId: string) {
     return toSignal(
       from(liveQuery(() =>
-        db.events.where('personId').equals(personId).sortBy('createdAt')
+        db.events.where('personIds').equals(personId).sortBy('createdAt')
       )),
       { initialValue: [] as MomentoEvent[] }
     );
@@ -59,7 +57,6 @@ export class EventsService {
 
   async delete(id: string): Promise<void> {
     await db.transaction('rw', [db.events, db.memories], async () => {
-      // Unlink memories that reference this event (don't delete the memory itself)
       await db.memories.where('eventId').equals(id).modify({ eventId: undefined, updatedAt: Date.now() });
       await db.events.delete(id);
     });

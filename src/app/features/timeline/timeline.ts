@@ -56,8 +56,8 @@ export class Timeline {
       const dates = getAllTimelineOccurrences(event, today);
       if (!dates.length) continue;
 
-      const person = event.personId
-        ? allPeople.find(p => p.id === event.personId)
+      const person = event.personIds?.[0]
+        ? allPeople.find(p => p.id === event.personIds[0])
         : undefined;
 
       for (const date of dates) {

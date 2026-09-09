@@ -137,12 +137,27 @@
           <a [routerLink]="['/events/new']" [queryParams]="{ personId: p.id }" class="btn-outline btn-small">+ Add event</a>
         </div>
 
+        @if (!hasBirthdayEvent()) {
+          <div class="birthday-nudge">
+            <span class="birthday-nudge-icon">🎂</span>
+            <div class="birthday-nudge-body">
+              <span class="birthday-nudge-title">Add {{ p.name }}'s birthday</span>
+              <span class="birthday-nudge-sub">Get reminded automatically each year</span>
+            </div>
+            <a [routerLink]="['/events/new']" [queryParams]="{ personId: p.id, eventType: 'birthday' }" class="birthday-nudge-btn">Add →</a>
+          </div>
+        }
+
         @if (personEvents().length === 0) {
           <div class="empty-state">
             <div class="empty-icon" aria-hidden="true">📅</div>
             <p class="empty-title">No events yet</p>
-            <p class="empty-sub">Track birthdays, anniversaries, and milestones.</p>
-            <a [routerLink]="['/events/new']" [queryParams]="{ personId: p.id }" class="link-accent">Add first event →</a>
+            <p class="empty-sub">Start with a birthday or anniversary.</p>
+            <div class="empty-quick-actions">
+              <a [routerLink]="['/events/new']" [queryParams]="{ personId: p.id, eventType: 'birthday' }" class="quick-type-btn quick-type-btn--birthday">🎂 Birthday</a>
+              <a [routerLink]="['/events/new']" [queryParams]="{ personId: p.id, eventType: 'anniversary' }" class="quick-type-btn quick-type-btn--anniversary">♥ Anniversary</a>
+              <a [routerLink]="['/events/new']" [queryParams]="{ personId: p.id }" class="quick-type-btn">＋ Other</a>
+            </div>
           </div>
         } @else {
           <ul class="event-list" role="list">

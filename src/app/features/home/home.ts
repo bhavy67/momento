@@ -59,7 +59,7 @@ export class Home {
     const people = this.allPeople();
     return onThisDayFilter(this.allEvents(), now).map(e => ({
       event: e,
-      person: people.find(p => p.id === e.personId),
+      person: e.personIds?.[0] ? people.find(p => p.id === e.personIds[0]) : undefined,
       yearsAgo: now.getFullYear() - e.date.year!,
       occurrenceDate: localDateToDate(e.date),
     }));
@@ -98,7 +98,7 @@ export class Home {
     // One-time events in the past are skipped
     if (e.recurrence.type === 'none' && days > 365) return null;
 
-    const person        = people.find(p => p.id === e.personId);
+    const person        = e.personIds?.[0] ? people.find(p => p.id === e.personIds[0]) : undefined;
     const yearsCount    = yearsOnNextOccurrence(e.date, now) ?? undefined;
     const age           = (e.type === 'birthday' && person?.birthday)
                           ? (turningAge(person.birthday, now) ?? undefined)
