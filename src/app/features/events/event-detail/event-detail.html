@@ -45,10 +45,14 @@
             <dd>{{ yearsCount() }} year{{ yearsCount() === 1 ? '' : 's' }}</dd>
           </div>
         }
-        @if (person(); as p) {
+        @if (linkedPeople().length) {
           <div class="detail-row">
-            <dt>Person</dt>
-            <dd><a [routerLink]="['/people', p.id]" class="link-accent">{{ p.name }}</a></dd>
+            <dt>{{ linkedPeople().length === 1 ? 'Person' : 'People' }}</dt>
+            <dd class="linked-people-row">
+              @for (p of linkedPeople(); track p!.id) {
+                <a [routerLink]="['/people', p!.id]" class="person-link-chip">{{ p!.name }}</a>
+              }
+            </dd>
           </div>
         }
         @if (e.description) {
@@ -71,6 +75,16 @@
 
       @if (milestoneInfo(); as ms) {
         <div class="milestone-banner">✦ {{ ms }}</div>
+      }
+
+      @if (isArchived()) {
+        <div class="archived-banner">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="2" y="5" width="12" height="9" rx="1" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M2 5l1.5-2h9L14 5M6 9h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          This event is archived
+        </div>
       }
     </div>
 
@@ -168,9 +182,15 @@
 
     <!-- Danger actions -->
     <div class="action-row">
-      <button type="button" class="btn-archive" (click)="showArchiveConfirm.set(true)">
-        Archive
-      </button>
+      @if (isArchived()) {
+        <button type="button" class="btn-restore" (click)="showRestoreConfirm.set(true)">
+          Restore event
+        </button>
+      } @else {
+        <button type="button" class="btn-archive" (click)="showArchiveConfirm.set(true)">
+          Archive
+        </button>
+      }
       <button type="button" class="btn-danger-outline" (click)="showDeleteConfirm.set(true)">
         Delete event
       </button>
@@ -187,11 +207,20 @@
 <app-confirm-dialog
   [open]="showArchiveConfirm()"
   title="Archive event?"
-  message="This event will be hidden from your upcoming list. You can still access it in the timeline."
+  message="This event will be hidden from your upcoming list. You can restore it later from the event page."
   confirmLabel="Archive"
   [danger]="false"
   (confirmed)="archiveEvent()"
   (cancelled)="showArchiveConfirm.set(false)" />
+
+<app-confirm-dialog
+  [open]="showRestoreConfirm()"
+  title="Restore event?"
+  message="This event will return to your active events and upcoming list."
+  confirmLabel="Restore"
+  [danger]="false"
+  (confirmed)="restoreEvent()"
+  (cancelled)="showRestoreConfirm.set(false)" />
 
 <app-confirm-dialog
   [open]="showDeleteConfirm()"

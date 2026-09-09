@@ -2,8 +2,15 @@
 
   <!-- Page title -->
   <div class="page-header">
-    <h1 class="page-title">Timeline</h1>
-    <span class="page-subtitle">Your story, chronologically</span>
+    <div>
+      <h1 class="page-title">Timeline</h1>
+      <span class="page-subtitle">Your story, chronologically</span>
+    </div>
+    @if (archivedCount() > 0) {
+      <button type="button" class="archived-toggle" (click)="showArchived.set(!showArchived())">
+        {{ showArchived() ? 'Hide archived' : archivedCount() + ' archived' }}
+      </button>
+    }
   </div>
 
   @if (!hasAnyEvents()) {
@@ -26,6 +33,29 @@
     </div>
 
   } @else {
+
+    <!-- Archived section -->
+    @if (showArchived() && archivedEntries().length > 0) {
+      <section class="archived-section" aria-labelledby="archived-heading">
+        <h2 id="archived-heading" class="archived-heading">Archived events</h2>
+        <ul class="archived-list" role="list">
+          @for (entry of archivedEntries(); track entry.event.id) {
+            <li class="archived-row">
+              <div class="archived-info">
+                <a [routerLink]="['/events', entry.event.id]" class="archived-title">{{ entry.event.title }}</a>
+                <div class="archived-meta">
+                  @if (entry.person) {
+                    <span>{{ entry.person.name }}</span>
+                  }
+                  <span>{{ entry.dateLabel }}</span>
+                </div>
+              </div>
+              <button type="button" class="restore-btn" (click)="restoreEvent(entry.event.id)">Restore</button>
+            </li>
+          }
+        </ul>
+      </section>
+    }
 
     <!-- Timeline -->
     @defer (on idle) {

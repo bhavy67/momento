@@ -29,12 +29,15 @@ export class EventDetail {
   private readonly ui              = inject(UiStateService);
   private readonly router          = inject(Router);
 
-  protected readonly showDeleteConfirm  = signal(false);
-  protected readonly showArchiveConfirm = signal(false);
+  protected readonly showDeleteConfirm   = signal(false);
+  protected readonly showArchiveConfirm  = signal(false);
+  protected readonly showRestoreConfirm  = signal(false);
 
   protected readonly event = computed(() =>
-    this.eventsService.all().find(e => e.id === this.id())
+    this.eventsService.allWithArchived().find(e => e.id === this.id())
   );
+
+  protected readonly isArchived = computed(() => !!this.event()?.isArchived);
 
   protected readonly person = computed(() => {
     const ids = this.event()?.personIds ?? [];
@@ -135,6 +138,14 @@ export class EventDetail {
     await this.eventsService.archive(e.id);
     this.ui.notify('Event archived', 'info');
     this.router.navigate(['/people']);
+  }
+
+  protected async restoreEvent(): Promise<void> {
+    const e = this.event();
+    if (!e) return;
+    this.showRestoreConfirm.set(false);
+    await this.eventsService.unarchive(e.id);
+    this.ui.notify('Event restored', 'success');
   }
 
   protected async deleteEvent(): Promise<void> {

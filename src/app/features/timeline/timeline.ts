@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EventsService } from '@core/services/events.service';
 import { PeopleService } from '@core/services/people.service';
 import { MemoriesService } from '@core/services/memories.service';
+import { UiStateService } from '@core/services/ui-state.service';
 import { getAllTimelineOccurrences } from '@utils/recurrence';
+import { formatLocalDate } from '@utils/dates';
 import type { MomentoEvent, Person } from '@types';
 
 interface TimelineEntry {
@@ -37,12 +39,32 @@ const MONTH_NAMES = [
   templateUrl: './timeline.html',
   styleUrl: './timeline.css',
 })
+interface ArchivedEntry {
+  event:   MomentoEvent;
+  person?: Person;
+  dateLabel: string;
+}
+
 export class Timeline {
   private readonly events   = inject(EventsService);
   private readonly people   = inject(PeopleService);
   private readonly memories = inject(MemoriesService);
+  private readonly ui       = inject(UiStateService);
 
-  protected readonly hasAnyEvents  = computed(() => this.events.all().length > 0);
+  protected readonly showArchived = signal(false);
+  protected readonly hasAnyEvents = computed(() => this.events.all().length > 0);
+
+  protected readonly archivedEntries = computed((): ArchivedEntry[] => {
+    if (!this.showArchived()) return [];
+    const allPeople = this.people.all();
+    return this.events.archived().map(event => ({
+      event,
+      person: event.personIds?.[0] ? allPeople.find(p => p.id === event.personIds[0]) : undefined,
+      dateLabel: formatLocalDate(event.date, 'short'),
+    }));
+  });
+
+  protected readonly archivedCount = computed(() => this.events.archived().length);
 
   protected readonly timelineYears = computed((): TimelineYear[] => {
     const allEvents = this.events.all();
@@ -105,5 +127,10 @@ export class Timeline {
 
   protected entryKey(entry: TimelineEntry): string {
     return entry.event.id + '-' + entry.date.getFullYear();
+  }
+
+  protected async restoreEvent(id: string): Promise<void> {
+    await this.events.unarchive(id);
+    this.ui.notify('Event restored', 'success');
   }
 }

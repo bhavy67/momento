@@ -158,6 +158,38 @@
 
 .link-accent { color: var(--color-accent); font-weight: 500; }
 
+/* Linked people chips */
+.linked-people-row { display: flex; gap: 5px; flex-wrap: wrap; }
+
+.person-link-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+
+.person-link-chip:hover { opacity: 0.8; }
+
+/* Archived banner */
+.archived-banner {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 1rem;
+  padding: 0.625rem 0.875rem;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-faint);
+}
+
 /* Milestone */
 .milestone-banner {
   margin-top: 1rem;
@@ -372,6 +404,19 @@
 }
 
 .btn-archive:hover { background: var(--color-surface-2); }
+
+.btn-restore {
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  background: var(--color-accent-bg);
+  transition: all 0.15s;
+}
+
+.btn-restore:hover { opacity: 0.85; }
 
 .btn-danger-outline {
   padding: 0.45rem 1rem;

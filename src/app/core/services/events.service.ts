@@ -17,6 +17,20 @@ export class EventsService {
     { initialValue: [] as MomentoEvent[] }
   );
 
+  readonly allWithArchived = toSignal(
+    from(liveQuery(() =>
+      db.events.orderBy('createdAt').reverse().toArray()
+    )),
+    { initialValue: [] as MomentoEvent[] }
+  );
+
+  readonly archived = toSignal(
+    from(liveQuery(() =>
+      db.events.filter(e => !!e.isArchived).reverse().sortBy('updatedAt')
+    )),
+    { initialValue: [] as MomentoEvent[] }
+  );
+
   forPerson(personId: string) {
     return toSignal(
       from(liveQuery(() =>
@@ -53,6 +67,10 @@ export class EventsService {
 
   async archive(id: string): Promise<void> {
     await db.events.update(id, { isArchived: true, updatedAt: Date.now() });
+  }
+
+  async unarchive(id: string): Promise<void> {
+    await db.events.update(id, { isArchived: false, updatedAt: Date.now() });
   }
 
   async delete(id: string): Promise<void> {
