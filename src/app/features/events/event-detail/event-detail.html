@@ -92,6 +92,27 @@
       </div>
     }
 
+    <!-- This year's note -->
+    <div class="section this-year-section">
+      <h2 class="section-title">This year</h2>
+      @if (thisYearMemory(); as mem) {
+        <div class="this-year-card">
+          @if (mem.title) {
+            <p class="this-year-title">{{ mem.title }}</p>
+          }
+          <p class="this-year-note">"{{ mem.note.length > 120 ? mem.note.slice(0, 120) + '…' : mem.note }}"</p>
+          <a [routerLink]="['/memories', mem.id]" class="link-accent this-year-read">View memory →</a>
+        </div>
+      } @else {
+        <a [routerLink]="['/memories/new']" [queryParams]="{ eventId: e.id }" class="add-note-btn">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Add a note for this year
+        </a>
+      }
+    </div>
+
     <!-- Last year context -->
     @if (lastYearContext(); as ctx) {
       <div class="last-year-card">

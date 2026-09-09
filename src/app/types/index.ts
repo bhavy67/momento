@@ -88,6 +88,8 @@ export interface Settings {
   theme: Theme;
   dateFormat: 'dmy' | 'mdy';
   upcomingWindowDays: number;
+  notificationsEnabled: boolean;
+  reminderDays: number[]; // days before the event to show a browser notification
 }
 
 // ─── Derived / computed types (never stored) ─────────────────────────────────

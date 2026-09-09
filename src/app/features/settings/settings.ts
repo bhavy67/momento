@@ -5,6 +5,7 @@ import {
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SettingsService } from '@core/services/settings.service';
+import { NotificationService } from '@core/services/notification.service';
 import { PeopleService } from '@core/services/people.service';
 import { EventsService } from '@core/services/events.service';
 import { GiftsService } from '@core/services/gifts.service';
@@ -29,6 +30,7 @@ interface ImportResult {
 })
 export class Settings {
   private readonly settingsService = inject(SettingsService);
+  private readonly notifService    = inject(NotificationService);
   private readonly people          = inject(PeopleService);
   private readonly eventsService   = inject(EventsService);
   private readonly gifts           = inject(GiftsService);
@@ -57,6 +59,18 @@ export class Settings {
   protected readonly clearText        = signal('');
   protected readonly clearing         = signal(false);
 
+  // ── Notifications ─────────────────────────────────────────────────────────
+  protected readonly notifPermission = signal<NotificationPermission>(
+    'Notification' in window ? Notification.permission : 'denied'
+  );
+
+  protected readonly reminderDayOptions: { value: number; label: string }[] = [
+    { value: 0,  label: 'Day of'  },
+    { value: 1,  label: '1 day'   },
+    { value: 3,  label: '3 days'  },
+    { value: 7,  label: '7 days'  },
+    { value: 14, label: '14 days' },
+  ];
 
   protected readonly themeOptions: { value: Theme; label: string }[] = [
     { value: 'light',  label: 'Light'  },
@@ -193,6 +207,78 @@ export class Settings {
     } catch {
       this.ui.notify('Failed to clear data', 'error');
       this.clearing.set(false);
+    }
+  }
+
+  // ── Notifications ─────────────────────────────────────────────────────────
+
+  protected isReminderDayActive(day: number): boolean {
+    return this.s().reminderDays.includes(day);
+  }
+
+  protected toggleReminderDay(day: number): void {
+    const current = this.s().reminderDays;
+    const next = current.includes(day)
+      ? current.filter(d => d !== day)
+      : [...current, day].sort((a, b) => a - b);
+    this.settingsService.update({ reminderDays: next });
+  }
+
+  protected async toggleNotifications(): Promise<void> {
+    const current = this.s().notificationsEnabled;
+    if (!current && 'Notification' in window) {
+      const perm = await this.notifService.requestPermission();
+      this.notifPermission.set(perm);
+      if (perm !== 'granted') return;
+    }
+    this.settingsService.update({ notificationsEnabled: !current });
+  }
+
+  // ── ICS Export ────────────────────────────────────────────────────────────
+
+  protected async exportICS(): Promise<void> {
+    try {
+      const events = await db.events.filter(e => !e.isArchived).toArray();
+      const pad    = (n: number) => String(n).padStart(2, '0');
+      const now    = new Date();
+      const dtstamp = now.toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z';
+
+      const lines: string[] = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Momento//EN',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+      ];
+
+      for (const e of events) {
+        const yy = e.date.year ?? now.getFullYear();
+        const dtstart = `${yy}${pad(e.date.month)}${pad(e.date.day)}`;
+        lines.push('BEGIN:VEVENT');
+        lines.push(`UID:${e.id}@momento`);
+        lines.push(`DTSTAMP:${dtstamp}`);
+        lines.push(`DTSTART;VALUE=DATE:${dtstart}`);
+        if (e.recurrence.type === 'yearly')  lines.push('RRULE:FREQ=YEARLY');
+        if (e.recurrence.type === 'monthly') lines.push('RRULE:FREQ=MONTHLY');
+        lines.push(`SUMMARY:${e.title.replace(/[\r\n]+/g, '\\n')}`);
+        if (e.description) lines.push(`DESCRIPTION:${e.description.replace(/[\r\n]+/g, '\\n')}`);
+        lines.push('END:VEVENT');
+      }
+
+      lines.push('END:VCALENDAR');
+
+      const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `momento-events-${now.toISOString().slice(0, 10)}.ics`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      this.ui.notify('Calendar exported', 'success');
+    } catch {
+      this.ui.notify('Export failed', 'error');
     }
   }
 

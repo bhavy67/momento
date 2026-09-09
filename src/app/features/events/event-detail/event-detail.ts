@@ -76,6 +76,16 @@ export class EventDetail {
     return null;
   });
 
+  protected readonly thisYearMemory = computed(() => {
+    const e = this.event();
+    if (!e) return null;
+    const thisYear = new Date().getFullYear();
+    const yearStart = new Date(thisYear, 0, 1).getTime();
+    const yearEnd   = new Date(thisYear, 11, 31, 23, 59, 59, 999).getTime();
+    return this.memories.allChronological()
+      .find(m => m.eventId === e.id && m.date >= yearStart && m.date <= yearEnd) ?? null;
+  });
+
   protected readonly lastYearContext = computed(() => {
     const e = this.event();
     if (!e?.personIds?.length) return null;

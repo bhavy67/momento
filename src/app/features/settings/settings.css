@@ -395,6 +395,73 @@
   cursor: not-allowed;
 }
 
+/* ── Notifications ──────────────────────────────────────────── */
+
+.toggle {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.toggle.on { background: var(--color-accent); }
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle.on .toggle-thumb { transform: translateX(18px); }
+
+.day-chips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.day-chip {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-surface-2);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.day-chip.active {
+  background: var(--color-accent-bg);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.day-chip:hover:not(.active) { border-color: var(--color-text-muted); }
+
+.notif-blocked {
+  padding: 0.625rem 0.875rem;
+  background: color-mix(in srgb, #F59E0B 10%, transparent);
+  border: 1px solid color-mix(in srgb, #F59E0B 30%, transparent);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  color: color-mix(in srgb, #92400E 80%, var(--color-text-primary));
+  line-height: 1.5;
+}
+
 /* ── Version line ───────────────────────────────────────────── */
 
 .version-line {

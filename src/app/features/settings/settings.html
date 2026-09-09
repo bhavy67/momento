@@ -48,6 +48,52 @@
     </div>
   </section>
 
+  <!-- ── Reminders ───────────────────────────────────────────── -->
+  <section class="card" aria-labelledby="notif-heading">
+    <h2 id="notif-heading" class="card-heading">Reminders</h2>
+
+    <div class="pref-row">
+      <div class="pref-label">
+        <span class="pref-name">Browser reminders</span>
+        <span class="pref-hint">Show a notification when an event is coming up</span>
+      </div>
+      <button
+        type="button"
+        class="toggle"
+        [class.on]="s().notificationsEnabled"
+        [attr.aria-pressed]="s().notificationsEnabled"
+        (click)="toggleNotifications()">
+        <span class="toggle-thumb"></span>
+      </button>
+    </div>
+
+    @if (s().notificationsEnabled) {
+      <div class="pref-row">
+        <div class="pref-label">
+          <span class="pref-name">Remind me</span>
+          <span class="pref-hint">When to send the reminder</span>
+        </div>
+        <div class="day-chips">
+          @for (opt of reminderDayOptions; track opt.value) {
+            <button
+              type="button"
+              class="day-chip"
+              [class.active]="isReminderDayActive(opt.value)"
+              (click)="toggleReminderDay(opt.value)">
+              {{ opt.label }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    @if (notifPermission() === 'denied') {
+      <div class="notif-blocked">
+        Notifications are blocked. Enable them in your browser settings to use this feature.
+      </div>
+    }
+  </section>
+
   <!-- ── Your data ────────────────────────────────────────────── -->
   <section class="card" aria-labelledby="data-heading">
     <h2 id="data-heading" class="card-heading">Your data</h2>
@@ -76,6 +122,14 @@
           <path d="M3 15h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
         {{ importing() ? 'Importing…' : 'Import backup' }}
+      </button>
+
+      <button type="button" class="btn-secondary" (click)="exportICS()">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <rect x="2" y="3" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M2 8h16M7 1v4M13 1v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        Export calendar (.ics)
       </button>
 
       <input #fileInput type="file" accept=".json" class="hidden-input" (change)="onFileChange($event)" />

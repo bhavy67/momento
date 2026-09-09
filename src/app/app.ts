@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angul
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UiStateService } from '@core/services/ui-state.service';
 import { SettingsService } from '@core/services/settings.service';
+import { NotificationService } from '@core/services/notification.service';
 import { SearchOverlay } from '@shared/components/search-overlay/search-overlay';
 import { TooltipDirective } from '@shared/directives/tooltip.directive';
 
@@ -15,6 +16,10 @@ import { TooltipDirective } from '@shared/directives/tooltip.directive';
 export class App {
   protected readonly ui       = inject(UiStateService);
   protected readonly settings = inject(SettingsService);
+
+  constructor() {
+    inject(NotificationService).checkAndNotify();
+  }
 
   @HostListener('document:keydown', ['$event'])
   onGlobalKeydown(e: KeyboardEvent): void {

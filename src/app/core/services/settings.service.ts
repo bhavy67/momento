@@ -7,6 +7,8 @@ const DEFAULTS: Settings = {
   theme: 'system',
   dateFormat: 'dmy',
   upcomingWindowDays: 60,
+  notificationsEnabled: false,
+  reminderDays: [0, 1, 7],
 };
 
 @Injectable({ providedIn: 'root' })
