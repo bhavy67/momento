@@ -206,7 +206,7 @@
               <ul class="gift-list" role="list">
                 @for (gift of group.gifts; track gift.id) {
                   <li class="gift-row">
-                    <a [routerLink]="['/gifts', gift.id, 'edit']" class="gift-link">
+                    <a [routerLink]="['/gifts', gift.id]" class="gift-link">
                       <div class="gift-desc">{{ gift.description }}</div>
                       <div class="gift-right">
                         @if (gift.price) {

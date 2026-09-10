@@ -1,0 +1,93 @@
+@if (gift(); as g) {
+  <div class="page">
+
+    <!-- Header -->
+    <div class="page-header">
+      @if (person(); as p) {
+        <a [routerLink]="['/people', p.id]" class="back-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ p.name }}
+        </a>
+      } @else {
+        <a routerLink="/people" class="back-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back
+        </a>
+      }
+      <a [routerLink]="['/gifts', g.id, 'edit']" class="btn-outline">Edit</a>
+    </div>
+
+    <!-- Gift card -->
+    <div class="gift-card">
+      <div class="gift-card-top">
+        <div class="gift-icon" aria-hidden="true">🎁</div>
+        <div class="gift-main">
+          <h1 class="gift-title">{{ g.description }}</h1>
+          <div class="gift-badges">
+            <span class="badge" [attr.data-status]="g.status">{{ statusLabel(g.status) }}</span>
+            <span class="badge badge--year">{{ g.year }}</span>
+          </div>
+        </div>
+      </div>
+
+      <dl class="gift-details">
+        @if (person(); as p) {
+          <div class="detail-row">
+            <dt>For</dt>
+            <dd><a [routerLink]="['/people', p.id]" class="link-accent">{{ p.name }}</a></dd>
+          </div>
+        }
+        @if (linkedEvent(); as ev) {
+          <div class="detail-row">
+            <dt>Event</dt>
+            <dd><a [routerLink]="['/events', ev.id]" class="link-accent">{{ ev.title }}</a></dd>
+          </div>
+        }
+        @if (g.price) {
+          <div class="detail-row">
+            <dt>Price</dt>
+            <dd>${{ g.price }}</dd>
+          </div>
+        }
+        @if (g.notes) {
+          <div class="detail-row">
+            <dt>Notes</dt>
+            <dd>{{ g.notes }}</dd>
+          </div>
+        }
+        @if (g.givenAt) {
+          <div class="detail-row">
+            <dt>Given</dt>
+            <dd>{{ formatGivenAt(g.givenAt!) }}</dd>
+          </div>
+        }
+      </dl>
+    </div>
+
+    <!-- Action row -->
+    <div class="action-row">
+      <button type="button" class="btn-danger-outline" (click)="showDeleteConfirm.set(true)">
+        Delete gift
+      </button>
+    </div>
+
+  </div>
+} @else {
+  <div class="not-found">
+    <p>Gift not found.</p>
+    <a routerLink="/people" class="link-accent">← Back to People</a>
+  </div>
+}
+
+<app-confirm-dialog
+  [open]="showDeleteConfirm()"
+  title="Delete gift?"
+  message="This gift will be permanently removed."
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="deleteGift()"
+  (cancelled)="showDeleteConfirm.set(false)" />

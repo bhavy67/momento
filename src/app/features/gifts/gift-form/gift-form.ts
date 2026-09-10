@@ -42,6 +42,7 @@ export class GiftForm {
   protected readonly saving   = signal(false);
   protected readonly showDeleteConfirm  = signal(false);
   protected readonly showMemoryPrompt   = signal(false);
+  protected readonly selectedEventId    = signal('');
 
   private pendingPersonId = '';
   private pendingEventId  = '';
@@ -59,6 +60,13 @@ export class GiftForm {
     return pid ? (this.people.all().find(p => p.id === pid)?.name ?? '') : '';
   });
 
+  protected readonly eventsForPicker = computed(() => {
+    const pid = this.effectivePersonId();
+    const all = this.eventsService.all();
+    if (!pid) return all;
+    return all.filter(e => (e.personIds ?? []).includes(pid));
+  });
+
   protected readonly form = this.fb.nonNullable.group({
     description: ['', [Validators.required, Validators.maxLength(200)]],
     status:      ['idea' as GiftStatus, Validators.required],
@@ -73,6 +81,11 @@ export class GiftForm {
 
   constructor() {
     effect(() => {
+      const eid = this.eventId();
+      if (eid && !this.id()) this.selectedEventId.set(eid);
+    });
+
+    effect(() => {
       const g = this.gift();
       if (g) {
         this.form.patchValue({
@@ -82,6 +95,7 @@ export class GiftForm {
           price:       g.price ?? null,
           notes:       g.notes ?? '',
         });
+        this.selectedEventId.set(g.eventId ?? '');
       }
     });
   }
@@ -92,7 +106,7 @@ export class GiftForm {
 
     const { description, status, year, price, notes } = this.form.getRawValue();
     const personId = this.effectivePersonId();
-    const eventId  = this.effectiveEventId();
+    const eventId  = this.selectedEventId();
 
     const input = {
       personId,
@@ -116,7 +130,7 @@ export class GiftForm {
 
       if (status === 'given') {
         this.pendingPersonId = personId;
-        this.pendingEventId  = eventId;
+        this.pendingEventId  = eventId || '';
         this.showMemoryPrompt.set(true);
       } else {
         this.navigateBack();

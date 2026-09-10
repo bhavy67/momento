@@ -67,6 +67,12 @@ export const routes: Routes = [
     title: 'Add gift · Momento',
   },
   {
+    path: 'gifts/:id',
+    loadComponent: () =>
+      import('@features/gifts/gift-detail/gift-detail').then(m => m.GiftDetail),
+    title: 'Gift · Momento',
+  },
+  {
     path: 'gifts/:id/edit',
     loadComponent: () =>
       import('@features/gifts/gift-form/gift-form').then(m => m.GiftForm),

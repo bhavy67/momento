@@ -82,11 +82,11 @@
     </button>
 
     <!-- Add button -->
-    <a routerLink="/people/new" class="sidebar-add-btn">
+    <a [routerLink]="fabLink" class="sidebar-add-btn">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
         <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      Add person
+      {{ fabLabel }}
     </a>
 
   </nav>
@@ -156,7 +156,7 @@
   </nav>
 
   <!-- ── FAB (mobile only) ──────────────────────────────────────── -->
-  <a routerLink="/people/new" class="fab" aria-label="Add person" tooltip="Add person" tooltipPos="left">
+  <a [routerLink]="fabLink" class="fab" [attr.aria-label]="fabLabel" [tooltip]="fabLabel" tooltipPos="left">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
     </svg>

@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
 import { UiStateService } from '@core/services/ui-state.service';
 import { SettingsService } from '@core/services/settings.service';
 import { NotificationService } from '@core/services/notification.service';
@@ -16,6 +18,25 @@ import { TooltipDirective } from '@shared/directives/tooltip.directive';
 export class App {
   protected readonly ui       = inject(UiStateService);
   protected readonly settings = inject(SettingsService);
+
+  private readonly router = inject(Router);
+  protected readonly currentUrl = toSignal(
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      map(e => (e as NavigationEnd).urlAfterRedirects),
+    ),
+    { initialValue: this.router.url }
+  );
+
+  protected get fabLink(): string {
+    const url = this.currentUrl() ?? '';
+    if (url.startsWith('/people')) return '/people/new';
+    return '/events/new';
+  }
+
+  protected get fabLabel(): string {
+    return this.fabLink === '/people/new' ? 'Add person' : 'Add event';
+  }
 
   constructor() {
     inject(NotificationService).checkAndNotify();
