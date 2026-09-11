@@ -94,6 +94,22 @@
     }
   </section>
 
+  <!-- ── Sample data ─────────────────────────────────────────── -->
+  <section class="card card--sample" aria-labelledby="sample-heading">
+    <h2 id="sample-heading" class="card-heading card-heading--sample">Try with sample data</h2>
+    <div class="danger-row">
+      <div>
+        <p class="danger-name">Load example people &amp; events</p>
+        <p class="danger-hint">Adds a few realistic people, events, gifts, and memories so you can explore Momento straight away. Won't overwrite existing data.</p>
+      </div>
+      <div class="sample-btns">
+        <button type="button" class="btn-sample" [disabled]="loadingSample()" (click)="loadSampleData()">
+          {{ loadingSample() ? 'Loading…' : 'Load sample data' }}
+        </button>
+      </div>
+    </div>
+  </section>
+
   <!-- ── Your data ────────────────────────────────────────────── -->
   <section class="card" aria-labelledby="data-heading">
     <h2 id="data-heading" class="card-heading">Your data</h2>

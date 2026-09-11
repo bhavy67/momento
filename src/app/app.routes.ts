@@ -79,6 +79,12 @@ export const routes: Routes = [
     title: 'Edit gift · Momento',
   },
   {
+    path: 'memories',
+    loadComponent: () =>
+      import('@features/memories/memory-list/memory-list').then(m => m.MemoryList),
+    title: 'Memories · Momento',
+  },
+  {
     path: 'memories/new',
     loadComponent: () =>
       import('@features/memories/memory-form/memory-form').then(m => m.MemoryForm),

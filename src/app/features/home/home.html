@@ -34,6 +34,13 @@
         <a routerLink="/people/new" class="btn-primary">Add your first person</a>
         <a routerLink="/events/new" class="btn-ghost">Add an event</a>
       </div>
+      <div class="empty-sample">
+        <span class="empty-sample-divider">or</span>
+        <button type="button" class="btn-sample-subtle" [disabled]="loadingSample()" (click)="loadSample()">
+          {{ loadingSample() ? 'Loading…' : '✦ Try with sample data' }}
+        </button>
+        <span class="empty-sample-hint">See how Momento works with example people &amp; events</span>
+      </div>
     </div>
   } @else {
 

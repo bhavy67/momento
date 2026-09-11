@@ -1,0 +1,73 @@
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Memories</h1>
+      <span class="page-subtitle">{{ filtered() }} of {{ total() }}</span>
+    </div>
+    <a routerLink="/memories/new" class="btn-primary">+ Add</a>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <svg class="search-icon" width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+      <path d="m11 11 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <input
+      class="search-input"
+      type="search"
+      placeholder="Search memories…"
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+      aria-label="Search memories" />
+  </div>
+
+  @if (total() === 0) {
+    <div class="empty-state">
+      <div class="empty-icon" aria-hidden="true">✨</div>
+      <p class="empty-title">No memories yet</p>
+      <p class="empty-sub">Start capturing the moments, stories, and details worth remembering.</p>
+      <a routerLink="/memories/new" class="link-accent">Add your first memory →</a>
+    </div>
+  } @else if (filtered() === 0) {
+    <div class="empty-state">
+      <p class="empty-title">No matches</p>
+      <p class="empty-sub">Try a different search term.</p>
+    </div>
+  } @else {
+    @for (yearGroup of years(); track yearGroup.year) {
+      <section class="year-group" [attr.aria-label]="yearGroup.year.toString()">
+        <div class="year-header">{{ yearGroup.year }}</div>
+        <ul class="memory-list" role="list">
+          @for (row of yearGroup.entries; track row.memory.id) {
+            <li class="memory-row">
+              <a [routerLink]="['/memories', row.memory.id]" class="memory-link">
+                <div class="memory-date">{{ row.dateLabel }}</div>
+                <div class="memory-body">
+                  @if (row.memory.title) {
+                    <div class="memory-title">{{ row.memory.title }}</div>
+                  }
+                  <p class="memory-preview">"{{ row.preview }}"</p>
+                  <div class="memory-meta">
+                    @for (p of row.people; track p.id; let last = $last) {
+                      <span class="meta-person">{{ p.name }}</span>@if (!last) {<span class="meta-sep">·</span>}
+                    }
+                    @if (row.eventTitle) {
+                      @if (row.people.length) { <span class="meta-sep">—</span> }
+                      <span class="meta-event">{{ row.eventTitle }}</span>
+                    }
+                  </div>
+                </div>
+                <svg class="memory-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+
+</div>

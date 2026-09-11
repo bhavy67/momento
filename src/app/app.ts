@@ -30,12 +30,16 @@ export class App {
 
   protected get fabLink(): string {
     const url = this.currentUrl() ?? '';
-    if (url.startsWith('/people')) return '/people/new';
+    if (url.startsWith('/people'))   return '/people/new';
+    if (url.startsWith('/memories')) return '/memories/new';
     return '/events/new';
   }
 
   protected get fabLabel(): string {
-    return this.fabLink === '/people/new' ? 'Add person' : 'Add event';
+    const url = this.currentUrl() ?? '';
+    if (url.startsWith('/people'))   return 'Add person';
+    if (url.startsWith('/memories')) return 'Add memory';
+    return 'Add event';
   }
 
   constructor() {

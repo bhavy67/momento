@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EventsService } from '@core/services/events.service';
 import { PeopleService } from '@core/services/people.service';
 import { SettingsService } from '@core/services/settings.service';
+import { SampleDataService } from '@core/services/sample-data.service';
+import { UiStateService } from '@core/services/ui-state.service';
 import {
   daysUntil, nextOccurrence, turningAge, yearsOnNextOccurrence,
   isMilestoneYear, milestoneLabel, onThisDayFilter,
@@ -21,6 +23,22 @@ export class Home {
   private readonly eventsService = inject(EventsService);
   private readonly people        = inject(PeopleService);
   private readonly settings      = inject(SettingsService);
+  private readonly sampleData    = inject(SampleDataService);
+  private readonly ui            = inject(UiStateService);
+
+  protected readonly loadingSample = signal(false);
+
+  protected async loadSample(): Promise<void> {
+    if (this.loadingSample()) return;
+    this.loadingSample.set(true);
+    try {
+      await this.sampleData.load();
+      this.ui.notify('Sample data loaded — explore away!', 'success');
+    } catch {
+      this.ui.notify('Failed to load sample data', 'error');
+      this.loadingSample.set(false);
+    }
+  }
 
   protected readonly today = new Date();
 

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SettingsService } from '@core/services/settings.service';
 import { NotificationService } from '@core/services/notification.service';
+import { SampleDataService } from '@core/services/sample-data.service';
 import { PeopleService } from '@core/services/people.service';
 import { EventsService } from '@core/services/events.service';
 import { GiftsService } from '@core/services/gifts.service';
@@ -31,6 +32,7 @@ interface ImportResult {
 export class Settings {
   private readonly settingsService = inject(SettingsService);
   private readonly notifService    = inject(NotificationService);
+  private readonly sampleData      = inject(SampleDataService);
   private readonly people          = inject(PeopleService);
   private readonly eventsService   = inject(EventsService);
   private readonly gifts           = inject(GiftsService);
@@ -58,6 +60,7 @@ export class Settings {
   protected readonly showClearConfirm = signal(false);
   protected readonly clearText        = signal('');
   protected readonly clearing         = signal(false);
+  protected readonly loadingSample    = signal(false);
 
   // ── Notifications ─────────────────────────────────────────────────────────
   protected readonly notifPermission = signal<NotificationPermission>(
@@ -232,6 +235,21 @@ export class Settings {
       if (perm !== 'granted') return;
     }
     this.settingsService.update({ notificationsEnabled: !current });
+  }
+
+  // ── Sample data ───────────────────────────────────────────────────────────
+
+  protected async loadSampleData(): Promise<void> {
+    if (this.loadingSample()) return;
+    this.loadingSample.set(true);
+    try {
+      await this.sampleData.load();
+      this.ui.notify('Sample data loaded', 'success');
+    } catch {
+      this.ui.notify('Failed to load sample data', 'error');
+    } finally {
+      this.loadingSample.set(false);
+    }
   }
 
   // ── ICS Export ────────────────────────────────────────────────────────────
