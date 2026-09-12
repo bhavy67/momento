@@ -88,29 +88,66 @@
           <a routerLink="/events/new" class="link-accent">Add an event →</a>
         </div>
       } @else {
-        <ul class="event-list" role="list">
-          @for (u of soonEvents(); track u.event.id) {
-            <li class="event-row" [class.milestone]="u.isMilestone" [attr.data-type]="u.event.type">
-              <a [routerLink]="['/events', u.event.id]" class="event-row-link">
-                <span class="event-icon" aria-hidden="true">{{ typeIcon(u.event.type) }}</span>
-                <div class="event-info">
-                  <span class="event-title">{{ u.event.title }}</span>
-                  @if (subtitleFor(u)) {
-                    <span class="event-sub">{{ subtitleFor(u) }}</span>
-                  }
-                </div>
-                <div class="event-right">
-                  <span class="countdown-pill" [class.urgent]="u.daysUntil <= 3" [class.soon]="u.daysUntil > 3 && u.daysUntil <= 7">
-                    {{ formatCountdown(u.daysUntil) }}
-                  </span>
-                  @if (u.isMilestone) {
-                    <span class="milestone-dot" aria-label="Milestone">✦</span>
-                  }
-                </div>
-              </a>
-            </li>
-          }
-        </ul>
+        @if (thisWeek().length > 0) {
+          <p class="bucket-label">This week</p>
+          <ul class="event-list" role="list">
+            @for (u of thisWeek(); track u.event.id) {
+              <li class="event-row" [class.milestone]="u.isMilestone" [attr.data-type]="u.event.type">
+                <a [routerLink]="['/events', u.event.id]" class="event-row-link">
+                  <span class="event-icon" aria-hidden="true">{{ typeIcon(u.event.type) }}</span>
+                  <div class="event-info">
+                    <span class="event-title">{{ u.event.title }}</span>
+                    @if (subtitleFor(u)) { <span class="event-sub">{{ subtitleFor(u) }}</span> }
+                  </div>
+                  <div class="event-right">
+                    <span class="countdown-pill" [class.urgent]="u.daysUntil <= 3" [class.soon]="u.daysUntil > 3 && u.daysUntil <= 7">{{ formatCountdown(u.daysUntil) }}</span>
+                    @if (u.isMilestone) { <span class="milestone-dot" aria-label="Milestone">✦</span> }
+                  </div>
+                </a>
+              </li>
+            }
+          </ul>
+        }
+        @if (thisMonth().length > 0) {
+          <p class="bucket-label">This month</p>
+          <ul class="event-list" role="list">
+            @for (u of thisMonth(); track u.event.id) {
+              <li class="event-row" [class.milestone]="u.isMilestone" [attr.data-type]="u.event.type">
+                <a [routerLink]="['/events', u.event.id]" class="event-row-link">
+                  <span class="event-icon" aria-hidden="true">{{ typeIcon(u.event.type) }}</span>
+                  <div class="event-info">
+                    <span class="event-title">{{ u.event.title }}</span>
+                    @if (subtitleFor(u)) { <span class="event-sub">{{ subtitleFor(u) }}</span> }
+                  </div>
+                  <div class="event-right">
+                    <span class="countdown-pill" [class.soon]="u.daysUntil <= 30">{{ formatCountdown(u.daysUntil) }}</span>
+                    @if (u.isMilestone) { <span class="milestone-dot" aria-label="Milestone">✦</span> }
+                  </div>
+                </a>
+              </li>
+            }
+          </ul>
+        }
+        @if (later().length > 0) {
+          <p class="bucket-label">Later</p>
+          <ul class="event-list" role="list">
+            @for (u of later(); track u.event.id) {
+              <li class="event-row" [class.milestone]="u.isMilestone" [attr.data-type]="u.event.type">
+                <a [routerLink]="['/events', u.event.id]" class="event-row-link">
+                  <span class="event-icon" aria-hidden="true">{{ typeIcon(u.event.type) }}</span>
+                  <div class="event-info">
+                    <span class="event-title">{{ u.event.title }}</span>
+                    @if (subtitleFor(u)) { <span class="event-sub">{{ subtitleFor(u) }}</span> }
+                  </div>
+                  <div class="event-right">
+                    <span class="countdown-pill">{{ formatCountdown(u.daysUntil) }}</span>
+                    @if (u.isMilestone) { <span class="milestone-dot" aria-label="Milestone">✦</span> }
+                  </div>
+                </a>
+              </li>
+            }
+          </ul>
+        }
       }
     </section>
 

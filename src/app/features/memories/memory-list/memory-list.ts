@@ -30,15 +30,28 @@ export class MemoryList {
   private readonly people          = inject(PeopleService);
   private readonly eventsService   = inject(EventsService);
 
-  protected readonly search = signal('');
+  protected readonly search         = signal('');
+  protected readonly filterPersonId = signal<string | null>(null);
+
+  protected readonly allPeople = computed(() => this.people.all());
+
+  protected readonly peopleMentioned = computed((): Person[] => {
+    const ids = new Set<string>();
+    for (const m of this.memoriesService.allChronological()) {
+      for (const id of m.personIds) ids.add(id);
+    }
+    return this.people.all().filter(p => ids.has(p.id));
+  });
 
   protected readonly years = computed((): MemoryYear[] => {
     const allPeople = this.people.all();
     const allEvents = this.eventsService.allWithArchived();
-    const q = this.search().toLowerCase().trim();
+    const q         = this.search().toLowerCase().trim();
+    const personId  = this.filterPersonId();
 
     const rows: MemoryRow[] = this.memoriesService.allChronological()
       .filter(m => {
+        if (personId && !m.personIds.includes(personId)) return false;
         if (!q) return true;
         return (
           m.note.toLowerCase().includes(q) ||

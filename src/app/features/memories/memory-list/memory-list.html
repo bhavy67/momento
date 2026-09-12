@@ -23,6 +23,28 @@
       aria-label="Search memories" />
   </div>
 
+  <!-- Person filter -->
+  @if (peopleMentioned().length > 1) {
+    <div class="person-filter" role="group" aria-label="Filter by person">
+      <button
+        type="button"
+        class="person-chip"
+        [class.active]="filterPersonId() === null"
+        (click)="filterPersonId.set(null)">
+        All
+      </button>
+      @for (p of peopleMentioned(); track p.id) {
+        <button
+          type="button"
+          class="person-chip"
+          [class.active]="filterPersonId() === p.id"
+          (click)="filterPersonId.set(filterPersonId() === p.id ? null : p.id)">
+          {{ p.name }}
+        </button>
+      }
+    </div>
+  }
+
   @if (total() === 0) {
     <div class="empty-state">
       <div class="empty-icon" aria-hidden="true">✨</div>

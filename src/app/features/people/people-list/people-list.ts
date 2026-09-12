@@ -67,6 +67,12 @@ export class PeopleList {
     return p.birthday ? formatLocalDate(p.birthday, 'short') : '—';
   }
 
+  protected initials(name: string): string {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
+
   protected relLabel(r: Relationship): string {
     return r.charAt(0).toUpperCase() + r.slice(1);
   }

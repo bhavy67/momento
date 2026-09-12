@@ -73,6 +73,33 @@
 .search-input:focus { outline: none; border-color: var(--color-accent); }
 .search-input::placeholder { color: var(--color-text-faint); }
 
+/* Person filter */
+.person-filter {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 1.125rem;
+}
+
+.person-chip {
+  padding: 0.275rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.person-chip.active,
+.person-chip:hover {
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+  border-color: var(--color-accent-bg);
+}
+
 /* Empty */
 .empty-state {
   text-align: center;

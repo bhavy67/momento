@@ -270,6 +270,19 @@
   opacity: 0.6;
 }
 
+/* ── Time-bucket labels ─────────────────────────────────────────── */
+
+.bucket-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-faint);
+  margin: 1.25rem 0 0.375rem;
+}
+
+.bucket-label:first-child { margin-top: 0; }
+
 /* ── Upcoming event rows ─────────────────────────────────────────── */
 
 .event-list {

@@ -14,7 +14,7 @@
 
     <!-- Profile card -->
     <div class="profile-card">
-      <div class="avatar">{{ p.name.charAt(0).toUpperCase() }}</div>
+      <div class="avatar" [attr.data-rel]="p.relationship">{{ initials(p.name) }}</div>
 
       <div class="profile-body">
         <div class="profile-top-row">

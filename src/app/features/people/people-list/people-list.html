@@ -50,7 +50,7 @@
         <li class="person-card" [attr.data-rel]="person.relationship">
           <a [routerLink]="['/people', person.id]" class="person-card-link">
             <div class="person-avatar" [attr.data-rel]="person.relationship">
-              {{ person.name.charAt(0).toUpperCase() }}
+              {{ initials(person.name) }}
             </div>
             <div class="person-info">
               <span class="person-name">{{ person.name }}</span>

@@ -72,6 +72,10 @@ export class Home {
     this.upcoming().filter(u => u.daysUntil > 0)
   );
 
+  protected readonly thisWeek  = computed(() => this.soonEvents().filter(u => u.daysUntil <= 7));
+  protected readonly thisMonth = computed(() => this.soonEvents().filter(u => u.daysUntil > 7 && u.daysUntil <= 30));
+  protected readonly later     = computed(() => this.soonEvents().filter(u => u.daysUntil > 30));
+
   protected readonly onThisDay = computed((): OnThisDayEntry[] => {
     const now    = this.today;
     const people = this.allPeople();

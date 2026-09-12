@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { EventsService } from '@core/services/events.service';
@@ -84,6 +84,11 @@ export class EventForm {
             milestone:   `${person.name}'s Milestone`,
           };
           if (map[etype]) patches['title'] = map[etype];
+
+          // Pre-fill date from person's birthday when adding a birthday event
+          if (etype === 'birthday' && person.birthday && !untracked(() => this.date())) {
+            this.date.set(person.birthday);
+          }
         }
       }
 

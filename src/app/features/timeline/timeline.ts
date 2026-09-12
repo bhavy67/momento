@@ -121,6 +121,15 @@ export class Timeline {
 
   protected readonly hasPastEvents = computed(() => this.timelineYears().length > 0);
 
+  protected readonly yearList = computed(() =>
+    this.timelineYears().map(y => y.year)
+  );
+
+  protected scrollToYear(year: number): void {
+    document.getElementById('tl-year-' + year)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   protected typeLabel(t: string): string {
     return t.charAt(0).toUpperCase() + t.slice(1);
   }

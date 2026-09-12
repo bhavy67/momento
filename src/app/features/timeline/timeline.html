@@ -57,11 +57,20 @@
       </section>
     }
 
+    <!-- Year navigation -->
+    @if (yearList().length > 1) {
+      <nav class="year-nav" aria-label="Jump to year">
+        @for (year of yearList(); track year) {
+          <button type="button" class="year-nav-pill" (click)="scrollToYear(year)">{{ year }}</button>
+        }
+      </nav>
+    }
+
     <!-- Timeline -->
     @defer (on idle) {
       <div class="timeline">
         @for (yearGroup of timelineYears(); track yearGroup.year) {
-          <section class="year-group" [attr.aria-label]="yearGroup.year.toString()">
+          <section class="year-group" [id]="'tl-year-' + yearGroup.year" [attr.aria-label]="yearGroup.year.toString()">
 
             <div class="year-header">
               <span class="year-number">{{ yearGroup.year }}</span>

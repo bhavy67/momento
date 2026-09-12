@@ -94,6 +94,34 @@
 
 .loading-bar--short { width: 60%; }
 
+/* ── Year navigation ──────────────────────────────────────── */
+
+.year-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.year-nav-pill {
+  padding: 0.3rem 0.875rem;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  letter-spacing: 0.01em;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.year-nav-pill:hover {
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+  border-color: var(--color-accent-bg);
+}
+
 /* ── Timeline ─────────────────────────────────────────────── */
 
 .timeline {
